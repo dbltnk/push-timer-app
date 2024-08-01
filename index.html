@@ -700,6 +700,7 @@
             isPaused = !isPaused;
             updatePauseButton();
             updateTimerDisplay();
+            playClickSound();
         };
 
         const updatePauseButton = () => {
@@ -737,14 +738,13 @@
         };
 
         const playTickSound = () => {
-            // currently disabled
-            // if (!isSoundOn) return;
-            // const oscillator = audioContext.createOscillator();
-            // oscillator.type = 'sine';
-            // oscillator.frequency.setValueAtTime(2000, audioContext.currentTime);
-            // oscillator.connect(audioContext.destination);
-            // oscillator.start();
-            // oscillator.stop(audioContext.currentTime + 0.01);
+            if (!isSoundOn) return;
+            const oscillator = audioContext.createOscillator();
+            oscillator.type = 'sine';
+            oscillator.frequency.setValueAtTime(2000, audioContext.currentTime);
+            oscillator.connect(audioContext.destination);
+            oscillator.start();
+            oscillator.stop(audioContext.currentTime + 0.01);
         };
 
         const playWarningSound = () => {
@@ -754,7 +754,7 @@
             oscillator.frequency.setValueAtTime(220, audioContext.currentTime);
             oscillator.connect(audioContext.destination);
             oscillator.start();
-            oscillator.stop(audioContext.currentTime + 0.5);
+            oscillator.stop(audioContext.currentTime + 0.1);
         };
 
         const toggleSound = () => {
@@ -779,7 +779,11 @@
                 }
                 else if (activePlayerIndex === -1) {
                     startTimer(index);
+                    playClickSound();
                     // not going to the next player since this is the first click
+                }
+                else {
+                    playWarningSound();
                 }
 
                 // Remove all overlays when one is tapped
