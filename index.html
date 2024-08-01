@@ -22,6 +22,7 @@
             display: flex;
             flex-direction: column;
             min-height: 100vh;
+            box-sizing: border-box;
         }
 
         .container {
@@ -31,8 +32,7 @@
             max-width: 600px;
             margin: 0 auto;
             width: 100%;
-            height: 100vh;
-            /* Make container full height of viewport */
+            height: calc(100vh - 20px);
         }
 
         #setupPage,
@@ -40,7 +40,6 @@
             display: flex;
             flex-direction: column;
             height: 100%;
-            /* Take full height of container */
         }
 
         h1,
@@ -102,14 +101,13 @@
             margin: 1em 0;
             flex-grow: 1;
             overflow-y: auto;
-            /* Allow scrolling if content overflows */
+            padding-bottom: 1em;
         }
 
         .player-input {
             display: flex;
             width: 100%;
             flex-grow: 1;
-            /* Allow inputs to grow */
         }
 
         .player-input input {
@@ -123,9 +121,7 @@
             border-radius: 5px;
             font-family: 'Roboto', sans-serif;
             font-size: calc(16px + (40 - 16) * ((100vw - 300px) / (1600 - 300)));
-            /* Responsive font size */
             min-height: 60px;
-            /* Minimum height for inputs */
         }
 
         .player-timer {
@@ -141,7 +137,7 @@
             border: 3px solid;
             user-select: none;
             min-height: 90px;
-            /* Minimum height for timer buttons */
+            flex-grow: 1;
         }
 
         .green input,
@@ -243,10 +239,8 @@
 
         #prepareToDuel {
             width: 100%;
-            margin-top: auto;
-            /* Push button to bottom */
+            margin-top: 1em;
             margin-bottom: 1em;
-            /* Add some space at the bottom */
         }
 
         #pauseButton {
@@ -255,7 +249,6 @@
             font-size: 1.5em;
             padding: 15px;
             height: 90px;
-            /* Same height as timer buttons */
         }
 
         #pauseButton.inactive {
@@ -275,7 +268,6 @@
             display: flex;
             justify-content: space-between;
             margin-top: auto;
-            /* Push to bottom */
             padding-top: 1em;
         }
 
@@ -294,7 +286,6 @@
             width: 24px;
             height: 24px;
             fill: white;
-            /* Make the icons white */
         }
 
         #backButton,
@@ -308,14 +299,12 @@
 
         #soundToggle svg {
             fill: white;
-            /* Make the sound toggle icon white */
         }
 
         #timerPage {
             display: none;
         }
 
-        /* Adjust font size based on number of players */
         .player-list[data-players="2"] .player-input input,
         #timerList[data-players="2"] .player-timer .time {
             font-size: calc(24px + (60 - 24) * ((100vw - 300px) / (1600 - 300)));
@@ -362,22 +351,32 @@
             }
 
             .input-group {
-                flex-direction: column;
-                align-items: flex-start;
+                flex-direction: row;
+                align-items: center;
+                padding: 8px;
+            }
+
+            label {
+                font-size: 0.9em;
             }
 
             input[type="number"],
             select {
-                width: 100%;
-                margin-top: 0.5em;
+                width: 100px;
+                padding: 6px;
+                font-size: 0.9em;
             }
 
             .player-timer .time {
-                font-size: 3em;
+                font-size: 2.5em;
             }
 
             .player-timer .name {
-                font-size: 1.2em;
+                font-size: 1em;
+            }
+
+            .bottom-buttons button {
+                font-size: 0.9em;
             }
         }
     </style>
