@@ -9,10 +9,8 @@
         @import url('https://fonts.googleapis.com/css2?family=Bangers&family=Roboto:wght@400;700&display=swap');
 
         :root {
-            --hex-width: min(95vw, 600px);
-            --hex-height: calc(var(--hex-width) * 0.866);
-            --player-width: calc(var(--hex-width) * 0.42);
-            --base-font-size: 24px;
+            --hex-size: min(90vw, 600px);
+            --base-font-size: 16px;
         }
 
         body {
@@ -22,17 +20,25 @@
             margin: 0;
             padding: 10px;
             font-size: var(--base-font-size);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
         }
 
         .container {
+            width: 100%;
             max-width: 800px;
-            margin: 0 auto;
+        }
+
+        h1,
+        h2 {
+            text-align: center;
+            margin: 0.5em 0;
         }
 
         h1 {
-            text-align: center;
-            font-size: 2.5em;
-            margin-bottom: 0.5em;
+            font-size: 2em;
             text-transform: uppercase;
             letter-spacing: 2px;
             font-weight: 700;
@@ -40,15 +46,9 @@
 
         h2 {
             font-family: 'Bangers', cursive;
-            text-align: center;
-            font-size: 2em;
-            margin-bottom: -0.3em;
+            font-size: 1.5em;
             color: #00ff00;
-            text-shadow:
-                -2px -2px 0 #000,
-                2px -2px 0 #000,
-                -2px 2px 0 #000,
-                2px 2px 0 #000;
+            text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000;
         }
 
         .input-group {
@@ -83,8 +83,8 @@
 
         #hexLayout {
             position: relative;
-            width: var(--hex-width);
-            height: var(--hex-height);
+            width: var(--hex-size);
+            height: calc(var(--hex-size) * 0.866);
             margin: 1em auto;
         }
 
@@ -99,7 +99,7 @@
 
         .player-input {
             position: absolute;
-            width: var(--player-width);
+            width: 30%;
         }
 
         .player-input input {
@@ -114,63 +114,125 @@
             font-family: 'Roboto', sans-serif;
         }
 
-        #player1 {
+        #player1,
+        #timer1 {
             bottom: 5%;
             left: 50%;
             transform: translateX(-50%);
         }
 
-        #player2 {
-            bottom: 28%;
-            left: 5%;
+        #player2,
+        #timer2 {
+            bottom: 22%;
+            left: 10%;
         }
 
-        #player3 {
-            top: 28%;
-            left: 5%;
+        #player3,
+        #timer3 {
+            top: 22%;
+            left: 10%;
         }
 
-        #player4 {
+        #player4,
+        #timer4 {
             top: 5%;
             left: 50%;
             transform: translateX(-50%);
         }
 
-        #player5 {
-            top: 28%;
-            right: 5%;
+        #player5,
+        #timer5 {
+            top: 22%;
+            right: 10%;
         }
 
-        #player6 {
-            bottom: 28%;
-            right: 5%;
+        #player6,
+        #timer6 {
+            bottom: 22%;
+            right: 10%;
         }
 
-        .green input {
+        .green input,
+        .green.player-timer {
             border-color: #4CAF50;
             background-color: rgba(76, 175, 80, 0.2);
         }
 
-        .blue input {
+        .blue input,
+        .blue.player-timer {
             border-color: #2196F3;
             background-color: rgba(33, 150, 243, 0.2);
         }
 
-        .red input {
+        .red input,
+        .red.player-timer {
             border-color: #F44336;
             background-color: rgba(244, 67, 54, 0.2);
         }
 
-        #prepareToDuel {
+        .player-timer {
+            position: absolute;
+            width: 30%;
+            height: 25%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 10px;
+            padding: 10px;
+            box-sizing: border-box;
+            border: 3px solid;
+        }
+
+        .player-timer .time {
+            font-size: 1.5em;
+        }
+
+        .player-timer .name {
+            font-size: 0.8em;
+            margin-top: 5px;
+        }
+
+        .player-timer.active {
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            outline: 3px solid #FFF;
+            outline-offset: 3px;
+        }
+
+        .player-timer.warning {
+            animation: warning-pulse 1s infinite;
+        }
+
+        .player-timer.eliminated {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        @keyframes warning-pulse {
+            0% {
+                box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+            }
+
+            50% {
+                box-shadow: 0 0 40px rgba(255, 0, 0, 0.8);
+            }
+
+            100% {
+                box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+            }
+        }
+
+        .action-button {
             display: block;
-            width: 100%;
             padding: 12px;
-            font-size: 1.3em;
+            font-size: 1.2em;
             background-color: #FF9800;
             color: white;
             border: none;
             cursor: pointer;
-            margin-top: 1em;
             text-transform: uppercase;
             font-family: 'Roboto', sans-serif;
             font-weight: 700;
@@ -180,63 +242,75 @@
             transition: all 0.3s ease;
         }
 
-        #prepareToDuel:hover {
+        .action-button:hover {
             background-color: #F57C00;
             transform: scale(1.05);
             box-shadow: 0 6px 8px rgba(0, 0, 0, 0.4);
         }
 
+        #prepareToDuel {
+            width: 100%;
+            margin-top: 1em;
+        }
+
+        #pauseButton {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            font-size: 2em;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+        }
+
+        #backButton {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+        }
+
+        #resetButton {
+            margin: 1em auto;
+            width: 200px;
+        }
+
+        #timerPage {
+            display: none;
+            position: relative;
+        }
+
         @media (max-width: 600px) {
             :root {
-                --base-font-size: 18px;
-                --hex-width: 95vw;
-                --hex-height: calc(var(--hex-width) * 0.866);
-                --player-width: calc(var(--hex-width) * 0.4);
+                --base-font-size: 14px;
             }
 
-            body {
-                padding: 8px;
+            .player-timer .time {
+                font-size: 1.2em;
             }
 
-            h1 {
-                font-size: 1.6em;
-                margin-bottom: 0.3em;
+            .player-timer .name {
+                font-size: 0.7em;
             }
 
-            h2 {
-                font-size: 1.4em;
-                margin-bottom: -0.2em;
+            #pauseButton {
+                width: 60px;
+                height: 60px;
+                font-size: 1.5em;
             }
 
             .input-group {
                 flex-direction: column;
                 align-items: flex-start;
-                padding: 8px;
-                margin-bottom: 0.3em;
-            }
-
-            label {
-                margin-bottom: 0.2em;
             }
 
             input[type="number"],
             select {
                 width: 100%;
-                margin-bottom: 0.3em;
-            }
-
-            .player-input input {
-                font-size: 0.8em;
-                padding: 8px;
-            }
-
-            #hexLayout {
-                margin: 0.5em auto;
-            }
-
-            #prepareToDuel {
-                padding: 10px;
-                font-size: 1.2em;
                 margin-top: 0.5em;
             }
         }
@@ -245,31 +319,48 @@
 
 <body>
     <div class="container">
-        <h2 id="rickVsRick">Rick vs Rick:</h2>
-        <h1 id="multiverseMarbleMadness">Multiverse Marble Madness</h1>
-        <div class="input-group">
-            <label for="timePerPlayer">Time per player (minutes):</label>
-            <input type="number" id="timePerPlayer" value="5" min="1">
+        <div id="setupPage">
+            <h2 id="rickVsRick">Rick vs Rick:</h2>
+            <h1 id="multiverseMarbleMadness">Multiverse Marble Madness</h1>
+            <div class="input-group">
+                <label for="timePerPlayer">Time per player (minutes):</label>
+                <input type="number" id="timePerPlayer" value="5" min="1">
+            </div>
+            <div class="input-group">
+                <label for="numberOfPlayers">Number of players:</label>
+                <select id="numberOfPlayers">
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="6">6</option>
+                </select>
+            </div>
+            <div id="hexLayout">
+                <div class="hexagon"></div>
+                <div id="player1" class="player-input"></div>
+                <div id="player2" class="player-input"></div>
+                <div id="player3" class="player-input"></div>
+                <div id="player4" class="player-input"></div>
+                <div id="player5" class="player-input"></div>
+                <div id="player6" class="player-input"></div>
+            </div>
+            <button id="prepareToDuel" class="action-button">Prepare to Duel</button>
         </div>
-        <div class="input-group">
-            <label for="numberOfPlayers">Number of players:</label>
-            <select id="numberOfPlayers">
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="6">6</option>
-            </select>
+
+        <div id="timerPage">
+            <div id="hexLayout">
+                <div class="hexagon"></div>
+                <div id="timer1" class="player-timer"></div>
+                <div id="timer2" class="player-timer"></div>
+                <div id="timer3" class="player-timer"></div>
+                <div id="timer4" class="player-timer"></div>
+                <div id="timer5" class="player-timer"></div>
+                <div id="timer6" class="player-timer"></div>
+                <button id="pauseButton" class="action-button">⏸️</button>
+            </div>
+            <button id="backButton" class="action-button">Back</button>
+            <button id="resetButton" class="action-button">Reset</button>
         </div>
-        <div id="hexLayout">
-            <div class="hexagon"></div>
-            <div id="player1" class="player-input"></div>
-            <div id="player2" class="player-input"></div>
-            <div id="player3" class="player-input"></div>
-            <div id="player4" class="player-input"></div>
-            <div id="player5" class="player-input"></div>
-            <div id="player6" class="player-input"></div>
-        </div>
-        <button id="prepareToDuel">Prepare to Duel</button>
     </div>
 
     <script>
@@ -279,6 +370,11 @@
         const hexLayout = $('hexLayout');
         const prepareToDuel = $('prepareToDuel');
         const multiverseMarbleMadness = $('multiverseMarbleMadness');
+        const setupPage = $('setupPage');
+        const timerPage = $('timerPage');
+        const pauseButton = $('pauseButton');
+        const resetButton = $('resetButton');
+        const backButton = $('backButton');
 
         const generateRandomName = () =>
             `Rick-${Math.floor(Math.random() * 133) + 1}-${String.fromCharCode(65 + Math.floor(Math.random() * 26))}`;
@@ -298,6 +394,11 @@
             4: ['green', 'green', 'blue', 'blue'],
             6: ['green', 'green', 'blue', 'blue', 'red', 'red']
         };
+
+        let players = [];
+        let activePlayerIndex = -1;
+        let gameInterval;
+        let isPaused = false;
 
         const updateHexLayout = () => {
             const count = parseInt(numberOfPlayers.value);
@@ -329,14 +430,137 @@
             return `hsl(${hue}, 100%, 70%)`;
         };
 
+        const formatTime = (seconds) => {
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = seconds % 60;
+            return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+        };
+
+        const updateTimerDisplay = () => {
+            players.forEach((player, index) => {
+                const timerElement = $(`timer${index + 1}`);
+                timerElement.innerHTML = `
+                    <div class="time">${formatTime(player.timeLeft)}</div>
+                    <div class="name">${player.name}</div>
+                `;
+                timerElement.className = `player-timer ${player.color}`;
+                if (index === activePlayerIndex) {
+                    timerElement.classList.add('active');
+                }
+                if (player.timeLeft <= 60 && player.timeLeft > 0) {
+                    timerElement.classList.add('warning');
+                }
+                if (player.timeLeft === 0) {
+                    timerElement.classList.add('eliminated');
+                }
+            });
+        };
+
+        const startGame = () => {
+            const count = parseInt(numberOfPlayers.value);
+            const positions = hexPositions[count];
+            const colors = playerColors[count];
+            const initialTime = parseInt(timePerPlayer.value) * 60;
+
+            players = positions.map((pos, index) => ({
+                name: $(`player${pos}`).querySelector('input').value,
+                timeLeft: initialTime,
+                color: colors[index],
+                eliminated: false
+            }));
+
+            activePlayerIndex = 0;
+            updateTimerDisplay();
+
+            gameInterval = setInterval(() => {
+                if (!isPaused) {
+                    players[activePlayerIndex].timeLeft--;
+                    if (players[activePlayerIndex].timeLeft === 60) {
+                        playWarningSound();
+                    }
+                    if (players[activePlayerIndex].timeLeft === 0) {
+                        players[activePlayerIndex].eliminated = true;
+                        nextPlayer();
+                    }
+                    updateTimerDisplay();
+                }
+            }, 1000);
+
+            setupPage.style.display = 'none';
+            timerPage.style.display = 'block';
+        };
+
+        const nextPlayer = () => {
+            do {
+                activePlayerIndex = (activePlayerIndex + 1) % players.length;
+            } while (players[activePlayerIndex].eliminated && players.some(player => !player.eliminated));
+
+            if (players.every(player => player.eliminated)) {
+                endGame();
+            } else {
+                playClickSound(activePlayerIndex);
+            }
+        };
+
+        const endGame = () => {
+            clearInterval(gameInterval);
+            alert('Game Over!');
+        };
+
+        const resetGame = () => {
+            if (confirm('Are you sure you want to reset the game?')) {
+                clearInterval(gameInterval);
+                players.forEach(player => {
+                    player.timeLeft = parseInt(timePerPlayer.value) * 60;
+                    player.eliminated = false;
+                });
+                activePlayerIndex = 0;
+                isPaused = false;
+                updateTimerDisplay();
+                pauseButton.textContent = '⏸️';
+            }
+        };
+
+        const togglePause = () => {
+            isPaused = !isPaused;
+            pauseButton.textContent = isPaused ? '▶️' : '⏸️';
+        };
+
+        const goBack = () => {
+            if (confirm('Are you sure you want to go back to the setup page? This will end the current game.')) {
+                clearInterval(gameInterval);
+                setupPage.style.display = 'block';
+                timerPage.style.display = 'none';
+            }
+        };
+
+        const playClickSound = (playerIndex) => {
+            const audio = new Audio(`click_sound_${playerIndex + 1}.mp3`);
+            audio.play();
+        };
+
+        const playWarningSound = () => {
+            const audio = new Audio('warning_sound.mp3');
+            audio.play();
+        };
+
         numberOfPlayers.addEventListener('change', updateHexLayout);
 
-        prepareToDuel.addEventListener('click', () => {
-            const activePlayers = Array.from(hexLayout.getElementsByTagName('input'))
-                .map(input => input.value);
-            console.log('Time per player:', timePerPlayer.value, 'minutes');
-            console.log('Players:', activePlayers);
-            alert('Prepare to duel! (Timer screen not implemented yet)');
+        prepareToDuel.addEventListener('click', startGame);
+
+        pauseButton.addEventListener('click', togglePause);
+        resetButton.addEventListener('click', resetGame);
+        backButton.addEventListener('click', goBack);
+
+        document.querySelectorAll('.player-timer').forEach((timer, index) => {
+            timer.addEventListener('click', () => {
+                if (!isPaused && index !== activePlayerIndex && !players[index].eliminated) {
+                    players[activePlayerIndex].timeLeft++;
+                    activePlayerIndex = index;
+                    updateTimerDisplay();
+                    playClickSound(index);
+                }
+            });
         });
 
         updateHexLayout();
