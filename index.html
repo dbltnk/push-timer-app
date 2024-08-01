@@ -200,6 +200,7 @@
             padding: 10px;
             box-sizing: border-box;
             border: 3px solid;
+            user-select: none;
         }
 
         .player-timer .time {
@@ -717,7 +718,7 @@
 
         document.querySelectorAll('.player-timer').forEach((timer, index) => {
             timer.addEventListener('click', () => {
-                if (!isGameStarted || (isGameStarted && !isPaused && !players[index].eliminated)) {
+                if (activePlayerIndex === -1 || (isGameStarted && !isPaused && activePlayerIndex === index)) {
                     startTimer(index);
                     nextPlayer();
                 }
