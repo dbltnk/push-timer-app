@@ -17,7 +17,7 @@
             background-color: #121212;
             color: #e0e0e0;
             margin: 0;
-            padding: 10px;
+            padding: 0 10px;
             font-size: var(--base-font-size);
             display: flex;
             flex-direction: column;
@@ -28,18 +28,18 @@
         .container {
             display: flex;
             flex-direction: column;
-            flex-grow: 1;
             max-width: 600px;
             margin: 0 auto;
             width: 100%;
-            height: calc(100vh - 20px);
+            height: 100%;
         }
 
         #setupPage,
         #timerPage {
             display: flex;
             flex-direction: column;
-            height: 100%;
+            flex-grow: 1;
+            max-height: calc(100vh - 100px);
         }
 
         h1,
@@ -239,8 +239,7 @@
 
         #prepareToDuel {
             width: 100%;
-            margin-top: -1em;
-            margin-bottom: 1em;
+            margin: 1em 0;
         }
 
         #pauseButton {
@@ -268,7 +267,7 @@
             display: flex;
             justify-content: space-between;
             margin-top: auto;
-            padding-top: 1em;
+            padding: 1em 0;
         }
 
         .bottom-buttons button {
