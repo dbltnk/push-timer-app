@@ -489,6 +489,7 @@
             const colors = playerColors[count];
 
             playerList.innerHTML = '';
+            playerList.setAttribute('data-players', count);
             for (let i = 0; i < count; i++) {
                 const div = document.createElement('div');
                 div.className = `player-input ${colors[i]}`;
@@ -532,13 +533,14 @@
 
         const updateTimerDisplay = () => {
             timerList.innerHTML = '';
+            timerList.setAttribute('data-players', players.length);
             players.forEach((player, index) => {
                 const timerElement = document.createElement('div');
                 timerElement.className = `player-timer ${player.color}`;
                 timerElement.innerHTML = `
-                    <div class="time">${formatTime(player.timeLeft)}</div>
-                    <div class="name">${player.name}</div>
-                `;
+            <div class="time">${formatTime(player.timeLeft)}</div>
+            <div class="name">${player.name}</div>
+        `;
                 if (index === activePlayerIndex) {
                     timerElement.classList.add('active');
                     if (isPaused) {
