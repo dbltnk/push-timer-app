@@ -35,7 +35,8 @@
             /* Make container full height of viewport */
         }
 
-        #setupPage {
+        #setupPage,
+        #timerPage {
             display: flex;
             flex-direction: column;
             height: 100%;
@@ -139,6 +140,8 @@
             box-sizing: border-box;
             border: 3px solid;
             user-select: none;
+            min-height: 90px;
+            /* Minimum height for timer buttons */
         }
 
         .green input,
@@ -271,7 +274,9 @@
         .bottom-buttons {
             display: flex;
             justify-content: space-between;
-            margin-top: 1em;
+            margin-top: auto;
+            /* Push to bottom */
+            padding-top: 1em;
         }
 
         .bottom-buttons button {
@@ -311,20 +316,44 @@
         }
 
         /* Adjust font size based on number of players */
-        .player-list[data-players="2"] .player-input input {
+        .player-list[data-players="2"] .player-input input,
+        #timerList[data-players="2"] .player-timer .time {
             font-size: calc(24px + (60 - 24) * ((100vw - 300px) / (1600 - 300)));
         }
 
-        .player-list[data-players="3"] .player-input input {
+        .player-list[data-players="3"] .player-input input,
+        #timerList[data-players="3"] .player-timer .time {
             font-size: calc(20px + (50 - 20) * ((100vw - 300px) / (1600 - 300)));
         }
 
-        .player-list[data-players="4"] .player-input input {
+        .player-list[data-players="4"] .player-input input,
+        #timerList[data-players="4"] .player-timer .time {
             font-size: calc(18px + (45 - 18) * ((100vw - 300px) / (1600 - 300)));
         }
 
-        .player-list[data-players="6"] .player-input input {
+        .player-list[data-players="6"] .player-input input,
+        #timerList[data-players="6"] .player-timer .time {
             font-size: calc(16px + (40 - 16) * ((100vw - 300px) / (1600 - 300)));
+        }
+
+        .player-list[data-players="2"] .player-input input,
+        #timerList[data-players="2"] .player-timer .name {
+            font-size: calc(18px + (45 - 18) * ((100vw - 300px) / (1600 - 300)));
+        }
+
+        .player-list[data-players="3"] .player-input input,
+        #timerList[data-players="3"] .player-timer .name {
+            font-size: calc(16px + (40 - 16) * ((100vw - 300px) / (1600 - 300)));
+        }
+
+        .player-list[data-players="4"] .player-input input,
+        #timerList[data-players="4"] .player-timer .name {
+            font-size: calc(14px + (35 - 14) * ((100vw - 300px) / (1600 - 300)));
+        }
+
+        .player-list[data-players="6"] .player-input input,
+        #timerList[data-players="6"] .player-timer .name {
+            font-size: calc(12px + (30 - 12) * ((100vw - 300px) / (1600 - 300)));
         }
 
         @media (max-width: 600px) {
