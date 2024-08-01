@@ -160,7 +160,7 @@
 
         .player-timer .time {
             font-size: 4em;
-            text-align: left;
+            text-align: center;
         }
 
         .player-timer .name {
@@ -306,22 +306,22 @@
 
         .player-list[data-players="2"] .player-input input,
         #timerList[data-players="2"] .player-timer .time {
-            font-size: calc(24px + (60 - 24) * ((100vw - 300px) / (1600 - 300)));
+            font-size: calc(24px + (60 - 24) * ((100vw - 300px) / (1600 - 300)) * 3);
         }
 
         .player-list[data-players="3"] .player-input input,
         #timerList[data-players="3"] .player-timer .time {
-            font-size: calc(20px + (50 - 20) * ((100vw - 300px) / (1600 - 300)));
+            font-size: calc(20px + (50 - 20) * ((100vw - 300px) / (1600 - 300)) * 3);
         }
 
         .player-list[data-players="4"] .player-input input,
         #timerList[data-players="4"] .player-timer .time {
-            font-size: calc(18px + (45 - 18) * ((100vw - 300px) / (1600 - 300)));
+            font-size: calc(18px + (45 - 18) * ((100vw - 300px) / (1600 - 300)) * 3);
         }
 
         .player-list[data-players="6"] .player-input input,
         #timerList[data-players="6"] .player-timer .time {
-            font-size: calc(16px + (40 - 16) * ((100vw - 300px) / (1600 - 300)));
+            font-size: calc(16px + (40 - 16) * ((100vw - 300px) / (1600 - 300)) * 3);
         }
 
         .player-list[data-players="2"] .player-input input,
@@ -531,6 +531,7 @@
             return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
         };
 
+        // Updated updateTimerDisplay function
         const updateTimerDisplay = () => {
             timerList.innerHTML = '';
             timerList.setAttribute('data-players', players.length);
@@ -556,9 +557,25 @@
                     timerElement.classList.add('eliminated');
                 }
                 timerList.appendChild(timerElement);
+
+                // Add event listener to each timer element
+                timerElement.addEventListener('click', () => {
+                    if (isGameStarted && !isPaused && activePlayerIndex === index) {
+                        startTimer(index);
+                        nextPlayer();
+                    }
+                    else if (activePlayerIndex === -1) {
+                        startTimer(index);
+                        playClickSound();
+                    }
+                    else {
+                        playWarningSound();
+                    }
+                });
             });
         };
 
+        // Updated startGame function
         const startGame = () => {
             const count = parseInt(numberOfPlayers.value);
             const colors = playerColors[count];
@@ -580,22 +597,6 @@
 
             setupPage.style.display = 'none';
             timerPage.style.display = 'block';
-
-            timerList.querySelectorAll('.player-timer').forEach((timer, index) => {
-                timer.addEventListener('click', () => {
-                    if (isGameStarted && !isPaused && activePlayerIndex === index) {
-                        startTimer(index);
-                        nextPlayer();
-                    }
-                    else if (activePlayerIndex === -1) {
-                        startTimer(index);
-                        playClickSound();
-                    }
-                    else {
-                        playWarningSound();
-                    }
-                });
-            });
 
             updateTimerPageColors();
         };
@@ -622,6 +623,7 @@
                     }
                     if (players[activePlayerIndex].timeLeft === 0) {
                         players[activePlayerIndex].eliminated = true;
+                        playWarningSound();
                         nextPlayer();
                     }
                     updateTimerDisplay();
