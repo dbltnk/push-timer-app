@@ -15,6 +15,13 @@
         body {
             font-family: 'Roboto', sans-serif;
             background-color: #121212;
+            /* Fallback color */
+            background-image:
+                linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.65)),
+                url('Purple Nebula 6 - 512x512.png');
+            background-repeat: repeat;
+            background-size: 512px 512px;
+            /* Match the image size */
             color: #e0e0e0;
             margin: 0;
             padding: 0 10px;
@@ -32,6 +39,20 @@
             margin: 0 auto;
             width: 100%;
             height: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        .container::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            /* Adjust opacity as needed */
+            z-index: -1;
         }
 
         #setupPage,
@@ -86,7 +107,7 @@
             width: 120px;
             padding: 8px;
             font-size: 1em;
-            background-color: #2c2c2c;
+            background-color: rgba(44, 44, 44, 0.8);
             border: 2px solid #444;
             color: #e0e0e0;
             box-sizing: border-box;
@@ -114,20 +135,19 @@
             width: 100%;
             padding: 10px;
             font-size: 1em;
-            background-color: #2c2c2c;
+            background-color: rgba(44, 44, 44, 0.8);
             color: #e0e0e0;
             border: 3px solid;
             box-sizing: border-box;
             border-radius: 5px;
             font-family: 'Roboto', sans-serif;
-            font-size: calc(16px + (40 - 16) * ((100vw - 300px) / (1600 - 300)));
-            min-height: 60px;
         }
 
         .player-timer {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: auto 1fr;
             align-items: center;
+            gap: 0.5em;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -138,6 +158,7 @@
             user-select: none;
             min-height: 80px;
             flex-grow: 1;
+            background-color: rgba(255, 255, 255, 0.1);
         }
 
         .green input,
@@ -164,7 +185,7 @@
         }
 
         .player-timer .time {
-            text-align: center;
+            font-size: 3em;
         }
 
         .player-timer .name {
@@ -222,7 +243,7 @@
             display: block;
             padding: 12px;
             font-size: 1.2em;
-            background-color: #FF9800;
+            background-color: rgba(255, 152, 0, 0.8);
             color: white;
             border: none;
             cursor: pointer;
@@ -236,7 +257,7 @@
         }
 
         .action-button:hover {
-            background-color: #F57C00;
+            background-color: rgba(245, 124, 0, 0.8);
             transform: scale(1.05);
             box-shadow: 0 6px 8px rgba(0, 0, 0, 0.4);
         }
@@ -256,16 +277,16 @@
         }
 
         #pauseButton.inactive {
-            background-color: #808080;
+            background-color: rgba(128, 128, 128, 0.8);
             cursor: not-allowed;
         }
 
         #pauseButton.can-pause {
-            background-color: #FF9800;
+            background-color: rgba(255, 152, 0, 0.8);
         }
 
         #pauseButton.can-play {
-            background-color: #9C27B0;
+            background-color: rgba(156, 39, 176, 0.8);
         }
 
         .bottom-buttons {
@@ -457,7 +478,7 @@
             <div id="playerList" class="player-list">
                 <!-- Player inputs will be dynamically added here -->
             </div>
-            <button id="prepareToDuel" class="action-button">Prepare to Duel</button>
+            <button id="prepareToDuel" class="action-button">Enter the Portal</button>
         </div>
 
         <div id="timerPage">
