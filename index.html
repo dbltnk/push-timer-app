@@ -123,14 +123,14 @@
 
         #player2,
         #timer2 {
-            bottom: 22%;
-            left: 10%;
+            bottom: 28%;
+            left: 5%;
         }
 
         #player3,
         #timer3 {
-            top: 22%;
-            left: 10%;
+            top: 28%;
+            left: 5%;
         }
 
         #player4,
@@ -142,14 +142,14 @@
 
         #player5,
         #timer5 {
-            top: 22%;
-            right: 10%;
+            top: 28%;
+            right: 5%;
         }
 
         #player6,
         #timer6 {
-            bottom: 22%;
-            right: 10%;
+            bottom: 28%;
+            right: 5%;
         }
 
         .green input,
@@ -188,7 +188,7 @@
         }
 
         .player-timer .time {
-            font-size: 1.5em;
+            font-size: 3em;
         }
 
         .player-timer .name {
@@ -198,8 +198,21 @@
 
         .player-timer.active {
             box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
-            outline: 3px solid #FFF;
-            outline-offset: 3px;
+            animation: active-pulse 1s infinite;
+        }
+
+        @keyframes active-pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+                box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            }
+
+            50% {
+                opacity: 0.8;
+                box-shadow: 0 0 30px rgba(255, 255, 255, 0.8);
+            }
         }
 
         .player-timer.warning {
@@ -268,6 +281,19 @@
             z-index: 10;
         }
 
+        #pauseButton.inactive {
+            background-color: #808080;
+            cursor: not-allowed;
+        }
+
+        #pauseButton.can-pause {
+            background-color: #FF9800;
+        }
+
+        #pauseButton.can-play {
+            background-color: #9C27B0;
+        }
+
         #backButton {
             position: absolute;
             top: 10px;
@@ -290,7 +316,7 @@
             }
 
             .player-timer .time {
-                font-size: 1.2em;
+                font-size: 2em;
             }
 
             .player-timer .name {
@@ -356,7 +382,7 @@
                 <div id="timer4" class="player-timer"></div>
                 <div id="timer5" class="player-timer"></div>
                 <div id="timer6" class="player-timer"></div>
-                <button id="pauseButton" class="action-button">⏸️</button>
+                <button id="pauseButton" class="action-button inactive">⏸️</button>
             </div>
             <button id="backButton" class="action-button">Back</button>
             <button id="resetButton" class="action-button">Reset</button>
@@ -384,7 +410,7 @@
         const hexPositions = {
             2: [1, 4],
             3: [1, 3, 5],
-            4: [2, 3, 5, 6],
+            4: [1, 2, 4, 5],
             6: [1, 2, 3, 4, 5, 6]
         };
 
@@ -399,6 +425,7 @@
         let activePlayerIndex = -1;
         let gameInterval;
         let isPaused = false;
+        let isGameStarted = false;
 
         const updateHexLayout = () => {
             const count = parseInt(numberOfPlayers.value);
@@ -411,9 +438,9 @@
                     const index = positions.indexOf(i);
                     div.innerHTML = `<input type="text" maxlength="30" value="${playerNames[index]}" placeholder="Player ${index + 1} name">`;
                     div.className = `player-input ${colors[index]}`;
+                    div.style.display = 'block';
                 } else {
-                    div.innerHTML = '';
-                    div.className = 'player-input';
+                    div.style.display = 'none';
                 }
             }
         };
@@ -440,9 +467,9 @@
             players.forEach((player, index) => {
                 const timerElement = $(`timer${index + 1}`);
                 timerElement.innerHTML = `
-                    <div class="time">${formatTime(player.timeLeft)}</div>
-                    <div class="name">${player.name}</div>
-                `;
+            <div class="time">${formatTime(player.timeLeft)}</div>
+            <div class="name">${player.name}</div>
+        `;
                 timerElement.className = `player-timer ${player.color}`;
                 if (index === activePlayerIndex) {
                     timerElement.classList.add('active');
@@ -453,6 +480,7 @@
                 if (player.timeLeft === 0) {
                     timerElement.classList.add('eliminated');
                 }
+                timerElement.style.display = player.active ? 'flex' : 'none';
             });
         };
 
@@ -466,12 +494,29 @@
                 name: $(`player${pos}`).querySelector('input').value,
                 timeLeft: initialTime,
                 color: colors[index],
-                eliminated: false
+                eliminated: false,
+                active: true
             }));
 
-            activePlayerIndex = 0;
+            activePlayerIndex = -1;
+            isGameStarted = false;
+            isPaused = false;
             updateTimerDisplay();
+            updatePauseButton();
 
+            setupPage.style.display = 'none';
+            timerPage.style.display = 'block';
+        };
+
+        const startTimer = (playerIndex) => {
+            if (isGameStarted && playerIndex === activePlayerIndex) return;
+
+            activePlayerIndex = playerIndex;
+            isGameStarted = true;
+            isPaused = false;
+            updatePauseButton();
+
+            if (gameInterval) clearInterval(gameInterval);
             gameInterval = setInterval(() => {
                 if (!isPaused) {
                     players[activePlayerIndex].timeLeft--;
@@ -485,9 +530,6 @@
                     updateTimerDisplay();
                 }
             }, 1000);
-
-            setupPage.style.display = 'none';
-            timerPage.style.display = 'block';
         };
 
         const nextPlayer = () => {
@@ -504,6 +546,8 @@
 
         const endGame = () => {
             clearInterval(gameInterval);
+            isGameStarted = false;
+            updatePauseButton();
             alert('Game Over!');
         };
 
@@ -514,16 +558,31 @@
                     player.timeLeft = parseInt(timePerPlayer.value) * 60;
                     player.eliminated = false;
                 });
-                activePlayerIndex = 0;
+                activePlayerIndex = -1;
+                isGameStarted = false;
                 isPaused = false;
                 updateTimerDisplay();
-                pauseButton.textContent = '⏸️';
+                updatePauseButton();
             }
         };
 
         const togglePause = () => {
+            if (!isGameStarted) return;
             isPaused = !isPaused;
-            pauseButton.textContent = isPaused ? '▶️' : '⏸️';
+            updatePauseButton();
+        };
+
+        const updatePauseButton = () => {
+            if (!isGameStarted) {
+                pauseButton.className = 'action-button inactive';
+                pauseButton.textContent = '⏸️';
+            } else if (isPaused) {
+                pauseButton.className = 'action-button can-play';
+                pauseButton.textContent = '▶️';
+            } else {
+                pauseButton.className = 'action-button can-pause';
+                pauseButton.textContent = '⏸️';
+            }
         };
 
         const goBack = () => {
@@ -545,20 +604,15 @@
         };
 
         numberOfPlayers.addEventListener('change', updateHexLayout);
-
         prepareToDuel.addEventListener('click', startGame);
-
         pauseButton.addEventListener('click', togglePause);
         resetButton.addEventListener('click', resetGame);
         backButton.addEventListener('click', goBack);
 
         document.querySelectorAll('.player-timer').forEach((timer, index) => {
             timer.addEventListener('click', () => {
-                if (!isPaused && index !== activePlayerIndex && !players[index].eliminated) {
-                    players[activePlayerIndex].timeLeft++;
-                    activePlayerIndex = index;
-                    updateTimerDisplay();
-                    playClickSound(index);
+                if (!isGameStarted || (isGameStarted && !isPaused && index !== activePlayerIndex && !players[index].eliminated)) {
+                    startTimer(index);
                 }
             });
         });
