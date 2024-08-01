@@ -6,114 +6,176 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Duel Timer Setup</title>
     <style>
+        :root {
+            --hex-width: min(85vw, 500px);
+            --hex-height: calc(var(--hex-width) * 0.866);
+            --player-width: calc(var(--hex-width) * 0.28);
+        }
+
         body {
             font-family: Arial, sans-serif;
             background-color: #121212;
             color: #e0e0e0;
             margin: 0;
-            padding: 20px;
+            padding: 10px;
+            font-size: 16px;
         }
 
         .container {
-            max-width: 600px;
+            max-width: 800px;
             margin: 0 auto;
         }
 
         h1 {
             text-align: center;
+            font-size: 2em;
+            margin-bottom: 1em;
         }
 
-        label,
-        input,
-        select,
-        button {
-            display: block;
-            width: 100%;
-            margin-top: 15px;
+        .input-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5em;
         }
 
-        input,
+        label {
+            flex: 1;
+            margin-right: 1em;
+        }
+
+        input[type="number"],
         select {
-            padding: 8px;
+            flex: 1;
+            padding: 10px;
+            font-size: 1em;
             background-color: #2c2c2c;
             border: 1px solid #444;
             color: #e0e0e0;
             box-sizing: border-box;
         }
 
-        button {
-            padding: 10px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background-color: #45a049;
-        }
-
         #hexLayout {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            grid-template-rows: repeat(4, auto);
-            gap: 10px;
-            margin-top: 20px;
-            max-width: 400px;
-            margin-left: auto;
-            margin-right: auto;
+            position: relative;
+            width: var(--hex-width);
+            height: var(--hex-height);
+            margin: 2em auto;
+        }
+
+        .hexagon {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.1);
+            clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
         }
 
         .player-input {
-            text-align: center;
+            position: absolute;
+            width: var(--player-width);
         }
 
         .player-input input {
-            width: 90%;
-            margin: 5px auto;
-            border: 2px solid;
+            width: 100%;
+            padding: 8px;
+            font-size: 0.9em;
+            background-color: #2c2c2c;
+            color: #e0e0e0;
+            border: 3px solid;
+            box-sizing: border-box;
         }
 
         #player1 {
-            grid-column: 2;
-            grid-row: 4;
+            bottom: 5%;
+            left: 50%;
+            transform: translateX(-50%);
         }
 
         #player2 {
-            grid-column: 1;
-            grid-row: 3;
+            bottom: 25%;
+            left: 8%;
         }
 
         #player3 {
-            grid-column: 1;
-            grid-row: 2;
+            top: 25%;
+            left: 8%;
         }
 
         #player4 {
-            grid-column: 2;
-            grid-row: 1;
+            top: 5%;
+            left: 50%;
+            transform: translateX(-50%);
         }
 
         #player5 {
-            grid-column: 3;
-            grid-row: 2;
+            top: 25%;
+            right: 8%;
         }
 
         #player6 {
-            grid-column: 3;
-            grid-row: 3;
+            bottom: 25%;
+            right: 8%;
         }
 
         .green input {
             border-color: #4CAF50;
+            background-color: rgba(76, 175, 80, 0.2);
         }
 
         .blue input {
             border-color: #2196F3;
+            background-color: rgba(33, 150, 243, 0.2);
         }
 
         .red input {
             border-color: #F44336;
+            background-color: rgba(244, 67, 54, 0.2);
+        }
+
+        #prepareToDuel {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            font-size: 1.2em;
+            background-color: #FF9800;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-top: 2em;
+        }
+
+        #prepareToDuel:hover {
+            background-color: #F57C00;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                font-size: 14px;
+                padding: 10px;
+            }
+
+            .input-group {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            label {
+                margin-bottom: 0.5em;
+            }
+
+            :root {
+                --hex-width: 85vw;
+                --hex-height: calc(var(--hex-width) * 0.866);
+                --player-width: calc(var(--hex-width) * 0.26);
+            }
+
+            #hexLayout {
+                margin: 3em auto;
+            }
+
+            .player-input input {
+                font-size: 0.7em;
+                padding: 4px;
+            }
         }
     </style>
 </head>
@@ -121,19 +183,28 @@
 <body>
     <div class="container">
         <h1>Duel Timer Setup</h1>
-        <label for="timePerPlayer">Time per player (minutes):</label>
-        <input type="number" id="timePerPlayer" value="5" min="1">
-
-        <label for="numberOfPlayers">Number of players:</label>
-        <select id="numberOfPlayers">
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="6">6</option>
-        </select>
-
-        <div id="hexLayout"></div>
-
+        <div class="input-group">
+            <label for="timePerPlayer">Time per player (minutes):</label>
+            <input type="number" id="timePerPlayer" value="5" min="1">
+        </div>
+        <div class="input-group">
+            <label for="numberOfPlayers">Number of players:</label>
+            <select id="numberOfPlayers">
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="6">6</option>
+            </select>
+        </div>
+        <div id="hexLayout">
+            <div class="hexagon"></div>
+            <div id="player1" class="player-input"></div>
+            <div id="player2" class="player-input"></div>
+            <div id="player3" class="player-input"></div>
+            <div id="player4" class="player-input"></div>
+            <div id="player5" class="player-input"></div>
+            <div id="player6" class="player-input"></div>
+        </div>
         <button id="prepareToDuel">Prepare to Duel</button>
     </div>
 
@@ -168,23 +239,16 @@
             const positions = hexPositions[count];
             const colors = playerColors[count];
 
-            hexLayout.innerHTML = '';
-
             for (let i = 1; i <= 6; i++) {
-                const div = document.createElement('div');
-                div.id = `player${i}`;
-                div.className = 'player-input';
+                const div = $(`player${i}`);
                 if (positions.includes(i)) {
                     const index = positions.indexOf(i);
-                    const input = document.createElement('input');
-                    input.type = 'text';
-                    input.maxLength = 30;
-                    input.value = playerNames[index];
-                    input.placeholder = `Player ${index + 1} name`;
-                    div.appendChild(input);
-                    div.classList.add(colors[index]);
+                    div.innerHTML = `<input type="text" maxlength="30" value="${playerNames[index]}" placeholder="Player ${index + 1} name">`;
+                    div.className = `player-input ${colors[index]}`;
+                } else {
+                    div.innerHTML = '';
+                    div.className = 'player-input';
                 }
-                hexLayout.appendChild(div);
             }
         };
 
