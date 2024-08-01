@@ -31,6 +31,15 @@
             max-width: 600px;
             margin: 0 auto;
             width: 100%;
+            height: 100vh;
+            /* Make container full height of viewport */
+        }
+
+        #setupPage {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            /* Take full height of container */
         }
 
         h1,
@@ -91,11 +100,15 @@
             gap: 10px;
             margin: 1em 0;
             flex-grow: 1;
+            overflow-y: auto;
+            /* Allow scrolling if content overflows */
         }
 
         .player-input {
             display: flex;
             width: 100%;
+            flex-grow: 1;
+            /* Allow inputs to grow */
         }
 
         .player-input input {
@@ -108,18 +121,21 @@
             box-sizing: border-box;
             border-radius: 5px;
             font-family: 'Roboto', sans-serif;
+            font-size: calc(16px + (40 - 16) * ((100vw - 300px) / (1600 - 300)));
+            /* Responsive font size */
+            min-height: 60px;
+            /* Minimum height for inputs */
         }
 
         .player-timer {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
             align-items: center;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s ease;
             border-radius: 10px;
-            padding: 10px;
+            padding: 15px;
             box-sizing: border-box;
             border: 3px solid;
             user-select: none;
@@ -144,12 +160,13 @@
         }
 
         .player-timer .time {
-            font-size: 2em;
+            font-size: 4em;
+            text-align: left;
         }
 
         .player-timer .name {
-            font-size: 0.8em;
-            margin-top: 5px;
+            font-size: 1.5em;
+            text-align: right;
         }
 
         .player-timer.active:not(.paused) {
@@ -223,7 +240,10 @@
 
         #prepareToDuel {
             width: 100%;
-            margin-top: 1em;
+            margin-top: auto;
+            /* Push button to bottom */
+            margin-bottom: 1em;
+            /* Add some space at the bottom */
         }
 
         #pauseButton {
@@ -231,6 +251,8 @@
             margin: 1em 0;
             font-size: 1.5em;
             padding: 15px;
+            height: 90px;
+            /* Same height as timer buttons */
         }
 
         #pauseButton.inactive {
@@ -246,36 +268,63 @@
             background-color: #9C27B0;
         }
 
-        #backButton {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            font-size: 1em;
-            padding: 8px;
+        .bottom-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1em;
         }
 
+        .bottom-buttons button {
+            flex: 1;
+            margin: 0 5px;
+            height: 50px;
+            font-size: 1em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .bottom-buttons button svg {
+            margin-right: 5px;
+            width: 24px;
+            height: 24px;
+            fill: white;
+            /* Make the icons white */
+        }
+
+        #backButton,
         #resetButton {
-            width: 100%;
-            margin: 1em 0;
+            width: auto;
+        }
+
+        #soundToggle {
+            position: static;
+        }
+
+        #soundToggle svg {
+            fill: white;
+            /* Make the sound toggle icon white */
         }
 
         #timerPage {
             display: none;
         }
 
-        #soundToggle {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: none;
-            border: none;
-            cursor: pointer;
+        /* Adjust font size based on number of players */
+        .player-list[data-players="2"] .player-input input {
+            font-size: calc(24px + (60 - 24) * ((100vw - 300px) / (1600 - 300)));
         }
 
-        #soundToggle svg {
-            width: 30px;
-            height: 30px;
-            fill: #e0e0e0;
+        .player-list[data-players="3"] .player-input input {
+            font-size: calc(20px + (50 - 20) * ((100vw - 300px) / (1600 - 300)));
+        }
+
+        .player-list[data-players="4"] .player-input input {
+            font-size: calc(18px + (45 - 18) * ((100vw - 300px) / (1600 - 300)));
+        }
+
+        .player-list[data-players="6"] .player-input input {
+            font-size: calc(16px + (40 - 16) * ((100vw - 300px) / (1600 - 300)));
         }
 
         @media (max-width: 600px) {
@@ -292,6 +341,14 @@
             select {
                 width: 100%;
                 margin-top: 0.5em;
+            }
+
+            .player-timer .time {
+                font-size: 3em;
+            }
+
+            .player-timer .name {
+                font-size: 1.2em;
             }
         }
     </style>
@@ -322,21 +379,34 @@
         </div>
 
         <div id="timerPage">
-            <button id="backButton" class="action-button">Back</button>
             <h2 id="rickVsRickTimer">Rick vs Rick:</h2>
             <h1 id="multiverseMarbleMadnessTimer">Multiverse Marble Madness</h1>
             <button id="pauseButton" class="action-button inactive">Pause</button>
             <div id="timerList" class="player-list">
                 <!-- Player timers will be dynamically added here -->
             </div>
-            <button id="resetButton" class="action-button">Reset</button>
+            <div class="bottom-buttons">
+                <button id="backButton" class="action-button">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" />
+                    </svg>
+                    Back
+                </button>
+                <button id="resetButton" class="action-button">
+                    <svg viewBox="0 0 24 24">
+                        <path
+                            d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z" />
+                    </svg>
+                    Reset
+                </button>
+                <button id="soundToggle" class="action-button">
+                    <svg viewBox="0 0 24 24">
+                        <path
+                            d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" />
+                    </svg>
+                </button>
+            </div>
         </div>
-        <button id="soundToggle">
-            <svg viewBox="0 0 24 24">
-                <path
-                    d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" />
-            </svg>
-        </button>
     </div>
 
     <script>
