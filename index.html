@@ -681,6 +681,17 @@
                 isPaused = false;
                 updateTimerDisplay();
                 updatePauseButton();
+                // Reset overlay visibility for the active players
+                const count = parseInt(numberOfPlayers.value);
+                for (let i = 0; i < 6; i++) {
+                    const overlay = document.querySelector(`#timer${i + 1} .overlay-text`);
+                    if (i < count) {
+                        overlay.classList.remove('hidden');
+                        overlay.style.visibility = 'visible';
+                    } else {
+                        overlay.style.visibility = 'hidden';
+                    }
+                }
             }
         };
 
