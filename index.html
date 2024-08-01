@@ -310,23 +310,27 @@
         }
 
         .player-list[data-players="2"] .player-input input,
-        #timerList[data-players="2"] .player-timer .time {
+        #timerList[data-players="2"] .player-timer .time,
+        #timerList[data-players="2"] .player-timer .clock-icon {
             font-size: 8em;
         }
 
         .player-list[data-players="3"] .player-input input,
-        #timerList[data-players="3"] .player-timer .time {
-            font-size: 7em;
-        }
-
-        .player-list[data-players="4"] .player-input input,
-        #timerList[data-players="4"] .player-timer .time {
+        #timerList[data-players="3"] .player-timer .time,
+        #timerList[data-players="3"] .player-timer .clock-icon {
             font-size: 6em;
         }
 
+        .player-list[data-players="4"] .player-input input,
+        #timerList[data-players="4"] .player-timer .time,
+        #timerList[data-players="4"] .player-timer .clock-icon {
+            font-size: 4em;
+        }
+
         .player-list[data-players="6"] .player-input input,
-        #timerList[data-players="6"] .player-timer .time {
-            font-size: 5em;
+        #timerList[data-players="6"] .player-timer .time,
+        #timerList[data-players="6"] .player-timer .clock-icon {
+            font-size: 3.5em;
         }
 
         .player-list[data-players="2"] .player-input input,
@@ -372,9 +376,9 @@
         }
 
         .clock-icon {
-            width: 5em;
-            height: 5em;
-            margin-right: 1em;
+            width: 1em;
+            height: 1em;
+            margin-right: 0.1em;
             transition: transform 0.5s ease;
         }
 
@@ -386,12 +390,12 @@
         .clock-face {
             fill: none;
             stroke: white;
-            stroke-width: 3;
+            stroke-width: 0.02em;
         }
 
         .clock-hand {
             stroke: white;
-            stroke-width: 3;
+            stroke-width: 0.02em;
             stroke-linecap: round;
         }
 
