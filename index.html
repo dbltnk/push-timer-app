@@ -9,7 +9,6 @@
         @import url('https://fonts.googleapis.com/css2?family=Bangers&family=Roboto:wght@400;700&display=swap');
 
         :root {
-            --hex-size: min(100vw, 900px);
             --base-font-size: 16px;
         }
 
@@ -21,15 +20,17 @@
             padding: 10px;
             font-size: var(--base-font-size);
             display: flex;
-            justify-content: center;
-            align-items: center;
+            flex-direction: column;
             min-height: 100vh;
         }
 
         .container {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            max-width: 600px;
+            margin: 0 auto;
             width: 100%;
-            max-width: 800px;
-            position: relative;
         }
 
         h1,
@@ -39,7 +40,7 @@
         }
 
         h1 {
-            font-size: 2em;
+            font-size: 1.5em;
             text-transform: uppercase;
             letter-spacing: 2px;
             font-weight: 700;
@@ -47,9 +48,11 @@
 
         h2 {
             font-family: 'Bangers', cursive;
-            font-size: 1.5em;
+            font-size: 1.2em;
             color: #00ff00;
             text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000;
+            margin-bottom: -0.75em;
+            letter-spacing: 1.5px;
         }
 
         .input-group {
@@ -65,7 +68,7 @@
 
         label {
             flex: 1;
-            font-size: 1.1em;
+            font-size: 1em;
             text-transform: uppercase;
         }
 
@@ -82,92 +85,44 @@
             font-family: 'Roboto', sans-serif;
         }
 
-        #hexLayout {
-            position: relative;
-            width: var(--hex-size);
-            height: calc(var(--hex-size) * 0.866);
-            margin: 1em auto;
-        }
-
-        .hexagon {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(255, 255, 255, 0.1);
-            clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
-            box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
-            visibility: hidden;
+        .player-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin: 1em 0;
+            flex-grow: 1;
         }
 
         .player-input {
-            position: absolute;
-            width: 40%;
+            display: flex;
+            width: 100%;
         }
 
         .player-input input {
             width: 100%;
             padding: 10px;
-            font-size: 3em;
+            font-size: 1em;
             background-color: #2c2c2c;
             color: #e0e0e0;
             border: 3px solid;
             box-sizing: border-box;
             border-radius: 5px;
             font-family: 'Roboto', sans-serif;
-            height: 3em;
-            text-align: center;
         }
 
-        #player1,
-        #timer1 {
-            bottom: 5%;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-
-        #player2,
-        #timer2 {
-            bottom: 28%;
-            left: 5%;
-        }
-
-        #player3,
-        #timer3 {
-            top: 28%;
-            left: 5%;
-        }
-
-        #player4,
-        #timer4 {
-            top: 5%;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-
-        #player5,
-        #timer5 {
-            top: 28%;
-            right: 5%;
-        }
-
-        #player6,
-        #timer6 {
-            bottom: 28%;
-            right: 5%;
-        }
-
-        .two-players #player1,
-        .two-players #timer1 {
-            bottom: 15%;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-
-        .two-players #player4,
-        .two-players #timer4 {
-            top: 15%;
-            left: 50%;
-            transform: translateX(-50%);
+        .player-timer {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 10px;
+            padding: 10px;
+            box-sizing: border-box;
+            border: 3px solid;
+            user-select: none;
         }
 
         .green input,
@@ -188,47 +143,8 @@
             background-color: rgba(244, 67, 54, 0.2);
         }
 
-        .player-timer {
-            position: absolute;
-            width: 30%;
-            height: 20%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border-radius: 10px;
-            padding: 10px;
-            box-sizing: border-box;
-            border: 3px solid;
-            user-select: none;
-        }
-
-        .overlay-text {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: rgba(0, 0, 0, 0.5);
-            color: white;
-            font-size: 1.5em;
-            pointer-events: none;
-            /* Prevent interaction with the overlay */
-            opacity: 1;
-            transition: opacity 0.3s ease;
-            visibility: hidden;
-        }
-
-        .player-timer .overlay-text.hidden {
-            opacity: 0;
-        }
-
         .player-timer .time {
-            font-size: 3em;
+            font-size: 2em;
         }
 
         .player-timer .name {
@@ -311,32 +227,15 @@
         }
 
         #pauseButton {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 10;
-            background-color: #FF9800;
-        }
-
-        #pauseButton svg {
-            width: 40px;
-            height: 40px;
+            width: 100%;
+            margin: 1em 0;
+            font-size: 1.5em;
+            padding: 15px;
         }
 
         #pauseButton.inactive {
             background-color: #808080;
             cursor: not-allowed;
-        }
-
-        #pauseButton.inactive svg {
-            fill: #A0A0A0;
         }
 
         #pauseButton.can-pause {
@@ -347,24 +246,21 @@
             background-color: #9C27B0;
         }
 
-        #pauseButton:not(.inactive) svg {
-            fill: #000000;
-        }
-
         #backButton {
             position: absolute;
             top: 10px;
             left: 10px;
+            font-size: 1em;
+            padding: 8px;
         }
 
         #resetButton {
-            margin: 1em auto;
-            width: 200px;
+            width: 100%;
+            margin: 1em 0;
         }
 
         #timerPage {
             display: none;
-            position: relative;
         }
 
         #soundToggle {
@@ -385,20 +281,6 @@
         @media (max-width: 600px) {
             :root {
                 --base-font-size: 14px;
-            }
-
-            .player-timer .time {
-                font-size: 2em;
-            }
-
-            .player-timer .name {
-                font-size: 0.7em;
-            }
-
-            #pauseButton {
-                width: 60px;
-                height: 60px;
-                font-size: 1.5em;
             }
 
             .input-group {
@@ -433,40 +315,20 @@
                     <option value="6">6</option>
                 </select>
             </div>
-            <div id="hexLayout">
-                <div class="hexagon"></div>
-                <div id="player1" class="player-input"></div>
-                <div id="player2" class="player-input"></div>
-                <div id="player3" class="player-input"></div>
-                <div id="player4" class="player-input"></div>
-                <div id="player5" class="player-input"></div>
-                <div id="player6" class="player-input"></div>
+            <div id="playerList" class="player-list">
+                <!-- Player inputs will be dynamically added here -->
             </div>
             <button id="prepareToDuel" class="action-button">Prepare to Duel</button>
         </div>
 
         <div id="timerPage">
-            <div id="hexLayout">
-                <div class="hexagon"></div>
-                <div id="timer1" class="player-timer"> <span class="overlay-text">TAP TO START</span>
-                </div>
-                <div id="timer2" class="player-timer"> <span class="overlay-text">TAP TO START</span>
-                </div>
-                <div id="timer3" class="player-timer"> <span class="overlay-text">TAP TO START</span>
-                </div>
-                <div id="timer4" class="player-timer"> <span class="overlay-text">TAP TO START</span>
-                </div>
-                <div id="timer5" class="player-timer"> <span class="overlay-text">TAP TO START</span>
-                </div>
-                <div id="timer6" class="player-timer"> <span class="overlay-text">TAP TO START</span>
-                </div>
-                <button id="pauseButton" class="action-button inactive">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
-                    </svg>
-                </button>
-            </div>
             <button id="backButton" class="action-button">Back</button>
+            <h2 id="rickVsRickTimer">Rick vs Rick:</h2>
+            <h1 id="multiverseMarbleMadnessTimer">Multiverse Marble Madness</h1>
+            <button id="pauseButton" class="action-button inactive">Pause</button>
+            <div id="timerList" class="player-list">
+                <!-- Player timers will be dynamically added here -->
+            </div>
             <button id="resetButton" class="action-button">Reset</button>
         </div>
         <button id="soundToggle">
@@ -481,7 +343,8 @@
         const $ = document.getElementById.bind(document);
         const timePerPlayer = $('timePerPlayer');
         const numberOfPlayers = $('numberOfPlayers');
-        const hexLayout = $('hexLayout');
+        const playerList = $('playerList');
+        const timerList = $('timerList');
         const prepareToDuel = $('prepareToDuel');
         const multiverseMarbleMadness = $('multiverseMarbleMadness');
         const setupPage = $('setupPage');
@@ -495,13 +358,6 @@
             `Rick-${Math.floor(Math.random() * 133) + 1}-${String.fromCharCode(65 + Math.floor(Math.random() * 26))}`;
 
         const playerNames = Array.from({ length: 6 }, generateRandomName);
-
-        const hexPositions = {
-            2: [1, 4],
-            3: [1, 3, 5],
-            4: [1, 2, 4, 5],
-            6: [1, 2, 3, 4, 5, 6]
-        };
 
         const playerColors = {
             2: ['green', 'blue'],
@@ -519,27 +375,37 @@
 
         const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
-        const updateHexLayout = () => {
+        const updatePlayerList = () => {
             const count = parseInt(numberOfPlayers.value);
-            const positions = hexPositions[count];
             const colors = playerColors[count];
 
-            for (let i = 1; i <= 6; i++) {
-                const div = $(`player${i}`);
-                if (positions.includes(i)) {
-                    const index = positions.indexOf(i);
-                    div.innerHTML = `<input type="text" maxlength="30" value="${playerNames[index]}" placeholder="Player ${index + 1} name">`;
-                    div.className = `player-input ${colors[index]}`;
-                    div.style.display = 'block';
-                } else {
-                    div.style.display = 'none';
-                }
+            playerList.innerHTML = '';
+            for (let i = 0; i < count; i++) {
+                const div = document.createElement('div');
+                div.className = `player-input ${colors[i]}`;
+                div.innerHTML = `<input type="text" maxlength="30" value="${playerNames[i]}" placeholder="Player ${i + 1} name">`;
+                playerList.appendChild(div);
             }
         };
 
         const updateMultiverseMarbleMadnessColors = () => {
+            const rickVsRick = $('rickVsRick');
+            rickVsRick.style.color = getHighContrastColor();
+
             const letters = multiverseMarbleMadness.textContent.split('');
             multiverseMarbleMadness.innerHTML = letters.map(letter =>
+                `<span style="color: ${getHighContrastColor()};">${letter}</span>`
+            ).join('');
+        };
+
+        const updateTimerPageColors = () => {
+            const rickVsRickTimer = $('rickVsRickTimer');
+            const multiverseMarbleMadnessTimer = $('multiverseMarbleMadnessTimer');
+
+            rickVsRickTimer.style.color = getHighContrastColor();
+
+            const letters = multiverseMarbleMadnessTimer.textContent.split('');
+            multiverseMarbleMadnessTimer.innerHTML = letters.map(letter =>
                 `<span style="color: ${getHighContrastColor()};">${letter}</span>`
             ).join('');
         };
@@ -556,14 +422,14 @@
         };
 
         const updateTimerDisplay = () => {
+            timerList.innerHTML = '';
             players.forEach((player, index) => {
-                const timerElement = $(`timer${index + 1}`);
-                timerElement.innerHTML = `
-            <div class="time">${formatTime(player.timeLeft)}</div>
-            <div class="name">${player.name}</div>
-            <span class="overlay-text">TAP TO START</span>
-        `;
+                const timerElement = document.createElement('div');
                 timerElement.className = `player-timer ${player.color}`;
+                timerElement.innerHTML = `
+                    <div class="time">${formatTime(player.timeLeft)}</div>
+                    <div class="name">${player.name}</div>
+                `;
                 if (index === activePlayerIndex) {
                     timerElement.classList.add('active');
                     if (isPaused) {
@@ -578,19 +444,17 @@
                 if (player.timeLeft === 0) {
                     timerElement.classList.add('eliminated');
                 }
-                timerElement.style.display = player.active ? 'flex' : 'none';
+                timerList.appendChild(timerElement);
             });
         };
 
-
         const startGame = () => {
             const count = parseInt(numberOfPlayers.value);
-            const positions = hexPositions[count];
             const colors = playerColors[count];
             const initialTime = parseInt(timePerPlayer.value) * 60;
 
-            players = positions.map((pos, index) => ({
-                name: $(`player${pos}`).querySelector('input').value,
+            players = Array.from(playerList.children).map((input, index) => ({
+                name: input.querySelector('input').value,
                 timeLeft: initialTime,
                 color: colors[index],
                 eliminated: false,
@@ -605,21 +469,24 @@
 
             setupPage.style.display = 'none';
             timerPage.style.display = 'block';
-            hexLayout.className = count === 2 ? 'two-players' : '';
 
-            document.querySelectorAll('.player-timer').forEach((timer, index) => {
-                if (index < count) {
-                    timer.style.display = 'flex';
-                    timer.querySelector('.overlay-text').style.visibility = 'visible';
-                } else {
-                    timer.style.display = 'none';
-                }
+            timerList.querySelectorAll('.player-timer').forEach((timer, index) => {
                 timer.addEventListener('click', () => {
-                    document.querySelectorAll('.overlay-text').forEach(overlay => {
-                        overlay.classList.remove('hidden');
-                    });
+                    if (isGameStarted && !isPaused && activePlayerIndex === index) {
+                        startTimer(index);
+                        nextPlayer();
+                    }
+                    else if (activePlayerIndex === -1) {
+                        startTimer(index);
+                        playClickSound();
+                    }
+                    else {
+                        playWarningSound();
+                    }
                 });
             });
+
+            updateTimerPageColors();
         };
 
         const startTimer = (playerIndex) => {
@@ -684,17 +551,6 @@
                 isPaused = false;
                 updateTimerDisplay();
                 updatePauseButton();
-                // Reset overlay visibility for the active players
-                const count = parseInt(numberOfPlayers.value);
-                for (let i = 0; i < 6; i++) {
-                    const overlay = document.querySelector(`#timer${i + 1} .overlay-text`);
-                    if (i < count) {
-                        overlay.classList.remove('hidden');
-                        overlay.style.visibility = 'visible';
-                    } else {
-                        overlay.style.visibility = 'hidden';
-                    }
-                }
             }
         };
 
@@ -707,18 +563,15 @@
         };
 
         const updatePauseButton = () => {
-            const pauseSvg = '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>';
-            const playSvg = '<path d="M8 5v14l11-7z"/>';
-
             if (!isGameStarted) {
                 pauseButton.className = 'action-button inactive';
-                pauseButton.innerHTML = `<svg viewBox="0 0 24 24">${pauseSvg}</svg>`;
+                pauseButton.textContent = 'Pause';
             } else if (isPaused) {
                 pauseButton.className = 'action-button can-play';
-                pauseButton.innerHTML = `<svg viewBox="0 0 24 24">${playSvg}</svg>`;
+                pauseButton.textContent = 'Resume';
             } else {
                 pauseButton.className = 'action-button can-pause';
-                pauseButton.innerHTML = `<svg viewBox="0 0 24 24">${pauseSvg}</svg>`;
+                pauseButton.textContent = 'Pause';
             }
         };
 
@@ -741,13 +594,14 @@
         };
 
         const playTickSound = () => {
-            if (!isSoundOn) return;
-            const oscillator = audioContext.createOscillator();
-            oscillator.type = 'sine';
-            oscillator.frequency.setValueAtTime(2000, audioContext.currentTime);
-            oscillator.connect(audioContext.destination);
-            oscillator.start();
-            oscillator.stop(audioContext.currentTime + 0.01);
+            // disabled for now, might come back
+            // if (!isSoundOn) return;
+            // const oscillator = audioContext.createOscillator();
+            // oscillator.type = 'sine';
+            // oscillator.frequency.setValueAtTime(2000, audioContext.currentTime);
+            // oscillator.connect(audioContext.destination);
+            // oscillator.start();
+            // oscillator.stop(audioContext.currentTime + 0.01);
         };
 
         const playWarningSound = () => {
@@ -767,36 +621,14 @@
                 '<svg viewBox="0 0 24 24"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>';
         };
 
-        numberOfPlayers.addEventListener('change', updateHexLayout);
+        numberOfPlayers.addEventListener('change', updatePlayerList);
         prepareToDuel.addEventListener('click', startGame);
         pauseButton.addEventListener('click', togglePause);
         resetButton.addEventListener('click', resetGame);
         backButton.addEventListener('click', goBack);
         soundToggle.addEventListener('click', toggleSound);
 
-        document.querySelectorAll('.player-timer').forEach((timer, index) => {
-            timer.addEventListener('click', () => {
-                if (isGameStarted && !isPaused && activePlayerIndex === index) {
-                    startTimer(index);
-                    nextPlayer();
-                }
-                else if (activePlayerIndex === -1) {
-                    startTimer(index);
-                    playClickSound();
-                    // not going to the next player since this is the first click
-                }
-                else {
-                    playWarningSound();
-                }
-
-                // Remove all overlays when one is tapped
-                document.querySelectorAll('.overlay-text').forEach(overlay => {
-                    overlay.classList.add('hidden');
-                });
-            });
-        });
-
-        updateHexLayout();
+        updatePlayerList();
         updateMultiverseMarbleMadnessColors();
     </script>
 </body>
