@@ -546,7 +546,36 @@
         let isGameStarted = false;
         let isSoundOn = true;
 
-        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        let audioContext;
+
+        // Function to initialize audio context
+        function initAudioContext() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
+        }
+
+        // Function to play a sound file
+        function playSound(filename) {
+            if (!audioContext || audioContext.state === 'suspended') {
+                console.warn('AudioContext is not initialized or is suspended. Sound will not play.');
+                return;
+            }
+
+            fetch(filename)
+                .then(response => response.arrayBuffer())
+                .then(arrayBuffer => audioContext.decodeAudioData(arrayBuffer))
+                .then(audioBuffer => {
+                    const source = audioContext.createBufferSource();
+                    source.buffer = audioBuffer;
+                    source.connect(audioContext.destination);
+                    source.start();
+                })
+                .catch(error => console.error('Error with playing sound:', error));
+        }
 
         const updatePlayerList = () => {
             const count = parseInt(numberOfPlayers.value);
@@ -629,22 +658,27 @@
                 timerList.appendChild(timerElement);
 
                 timerElement.addEventListener('click', () => {
+                    initAudioContext(); // Ensure audio context is initialized
                     if (isGameStarted && !isPaused && activePlayerIndex === index) {
                         startTimer(index);
                         nextPlayer();
+                        playClickSound();
                     }
                     else if (activePlayerIndex === -1) {
                         startTimer(index);
                         playClickSound();
+                        playSound('641028__valentinesmith__musica-de-enfrentamiento.mp3');
                     }
                     else {
-                        playWarningSound();
+                        playSound('327736__distillerystudio__error_03.wav');
                     }
                 });
             });
         };
 
         const startGame = () => {
+            initAudioContext(); // Ensure audio context is initialized
+            playSound('453391__breviceps__warp-sfx.wav');
             const count = parseInt(numberOfPlayers.value);
             const colors = playerColors[count];
             const initialTime = parseInt(timePerPlayer.value) * 60;
@@ -687,15 +721,14 @@
                 if (!isPaused) {
                     players[activePlayerIndex].timeLeft--;
                     if (players[activePlayerIndex].timeLeft === 60) {
-                        playWarningSound();
+                        playSound('352804__jofae__timer-click-track.wav');
                     }
                     if (players[activePlayerIndex].timeLeft === 0) {
                         players[activePlayerIndex].eliminated = true;
-                        playWarningSound();
+                        playSound('543966__sweet_niche__trumpet_cry.wav');
                         nextPlayer();
                     }
                     updateTimerDisplay();
-                    playTickSound();
                 }
             }, 1000);
         };
@@ -765,34 +798,13 @@
         };
 
         const playClickSound = () => {
-            if (!isSoundOn) return;
+            if (!isSoundOn || !audioContext) return;
             const oscillator = audioContext.createOscillator();
             oscillator.type = 'sine';
             oscillator.frequency.setValueAtTime(1000, audioContext.currentTime);
             oscillator.connect(audioContext.destination);
             oscillator.start();
             oscillator.stop(audioContext.currentTime + 0.01);
-        };
-
-        const playTickSound = () => {
-            // disabled for now, might come back
-            // if (!isSoundOn) return;
-            // const oscillator = audioContext.createOscillator();
-            // oscillator.type = 'sine';
-            // oscillator.frequency.setValueAtTime(2000, audioContext.currentTime);
-            // oscillator.connect(audioContext.destination);
-            // oscillator.start();
-            // oscillator.stop(audioContext.currentTime + 0.01);
-        };
-
-        const playWarningSound = () => {
-            if (!isSoundOn) return;
-            const oscillator = audioContext.createOscillator();
-            oscillator.type = 'square';
-            oscillator.frequency.setValueAtTime(220, audioContext.currentTime);
-            oscillator.connect(audioContext.destination);
-            oscillator.start();
-            oscillator.stop(audioContext.currentTime + 0.1);
         };
 
         const toggleSound = () => {
@@ -808,6 +820,9 @@
         resetButton.addEventListener('click', resetGame);
         backButton.addEventListener('click', goBack);
         soundToggle.addEventListener('click', toggleSound);
+
+        // Initialize audio context on first user interaction
+        document.addEventListener('click', initAudioContext, { once: true });
 
         updatePlayerList();
         updateMultiverseMarbleMadnessColors();
