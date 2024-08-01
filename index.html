@@ -29,6 +29,7 @@
         .container {
             width: 100%;
             max-width: 800px;
+            position: relative;
         }
 
         h1,
@@ -152,6 +153,20 @@
             right: 5%;
         }
 
+        .two-players #player1,
+        .two-players #timer1 {
+            bottom: 15%;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .two-players #player4,
+        .two-players #timer4 {
+            top: 15%;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
         .green input,
         .green.player-timer {
             border-color: #4CAF50;
@@ -196,9 +211,13 @@
             margin-top: 5px;
         }
 
-        .player-timer.active {
+        .player-timer.active:not(.paused) {
             box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
             animation: active-pulse 1s infinite;
+        }
+
+        .player-timer.active.paused {
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
         }
 
         @keyframes active-pulse {
@@ -274,16 +293,25 @@
             width: 80px;
             height: 80px;
             border-radius: 50%;
-            font-size: 2em;
             display: flex;
             justify-content: center;
             align-items: center;
             z-index: 10;
+            background-color: #FF9800;
+        }
+
+        #pauseButton svg {
+            width: 40px;
+            height: 40px;
         }
 
         #pauseButton.inactive {
             background-color: #808080;
             cursor: not-allowed;
+        }
+
+        #pauseButton.inactive svg {
+            fill: #A0A0A0;
         }
 
         #pauseButton.can-pause {
@@ -292,6 +320,10 @@
 
         #pauseButton.can-play {
             background-color: #9C27B0;
+        }
+
+        #pauseButton:not(.inactive) svg {
+            fill: #000000;
         }
 
         #backButton {
@@ -308,6 +340,21 @@
         #timerPage {
             display: none;
             position: relative;
+        }
+
+        #soundToggle {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        #soundToggle svg {
+            width: 30px;
+            height: 30px;
+            fill: #e0e0e0;
         }
 
         @media (max-width: 600px) {
@@ -382,11 +429,21 @@
                 <div id="timer4" class="player-timer"></div>
                 <div id="timer5" class="player-timer"></div>
                 <div id="timer6" class="player-timer"></div>
-                <button id="pauseButton" class="action-button inactive">⏸️</button>
+                <button id="pauseButton" class="action-button inactive">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
+                    </svg>
+                </button>
             </div>
             <button id="backButton" class="action-button">Back</button>
             <button id="resetButton" class="action-button">Reset</button>
         </div>
+        <button id="soundToggle">
+            <svg viewBox="0 0 24 24">
+                <path
+                    d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" />
+            </svg>
+        </button>
     </div>
 
     <script>
@@ -401,6 +458,7 @@
         const pauseButton = $('pauseButton');
         const resetButton = $('resetButton');
         const backButton = $('backButton');
+        const soundToggle = $('soundToggle');
 
         const generateRandomName = () =>
             `Rick-${Math.floor(Math.random() * 133) + 1}-${String.fromCharCode(65 + Math.floor(Math.random() * 26))}`;
@@ -426,6 +484,9 @@
         let gameInterval;
         let isPaused = false;
         let isGameStarted = false;
+        let isSoundOn = true;
+
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
         const updateHexLayout = () => {
             const count = parseInt(numberOfPlayers.value);
@@ -473,6 +534,11 @@
                 timerElement.className = `player-timer ${player.color}`;
                 if (index === activePlayerIndex) {
                     timerElement.classList.add('active');
+                    if (isPaused) {
+                        timerElement.classList.add('paused');
+                    } else {
+                        timerElement.classList.remove('paused');
+                    }
                 }
                 if (player.timeLeft <= 60 && player.timeLeft > 0) {
                     timerElement.classList.add('warning');
@@ -506,15 +572,21 @@
 
             setupPage.style.display = 'none';
             timerPage.style.display = 'block';
+            hexLayout.className = count === 2 ? 'two-players' : '';
         };
 
         const startTimer = (playerIndex) => {
-            if (isGameStarted && playerIndex === activePlayerIndex) return;
+            if (playerIndex === activePlayerIndex) return;
+
+            if (isGameStarted) {
+                players[activePlayerIndex].timeLeft++; // Compensate for the last second
+            }
 
             activePlayerIndex = playerIndex;
             isGameStarted = true;
             isPaused = false;
             updatePauseButton();
+            updateTimerDisplay();
 
             if (gameInterval) clearInterval(gameInterval);
             gameInterval = setInterval(() => {
@@ -528,6 +600,7 @@
                         nextPlayer();
                     }
                     updateTimerDisplay();
+                    playTickSound();
                 }
             }, 1000);
         };
@@ -540,7 +613,8 @@
             if (players.every(player => player.eliminated)) {
                 endGame();
             } else {
-                playClickSound(activePlayerIndex);
+                playClickSound();
+                startTimer(activePlayerIndex);
             }
         };
 
@@ -570,18 +644,22 @@
             if (!isGameStarted) return;
             isPaused = !isPaused;
             updatePauseButton();
+            updateTimerDisplay();
         };
 
         const updatePauseButton = () => {
+            const pauseSvg = '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>';
+            const playSvg = '<path d="M8 5v14l11-7z"/>';
+
             if (!isGameStarted) {
                 pauseButton.className = 'action-button inactive';
-                pauseButton.textContent = '⏸️';
+                pauseButton.innerHTML = `<svg viewBox="0 0 24 24">${pauseSvg}</svg>`;
             } else if (isPaused) {
                 pauseButton.className = 'action-button can-play';
-                pauseButton.textContent = '▶️';
+                pauseButton.innerHTML = `<svg viewBox="0 0 24 24">${playSvg}</svg>`;
             } else {
                 pauseButton.className = 'action-button can-pause';
-                pauseButton.textContent = '⏸️';
+                pauseButton.innerHTML = `<svg viewBox="0 0 24 24">${pauseSvg}</svg>`;
             }
         };
 
@@ -593,14 +671,41 @@
             }
         };
 
-        const playClickSound = (playerIndex) => {
-            const audio = new Audio(`click_sound_${playerIndex + 1}.mp3`);
-            audio.play();
+        const playClickSound = () => {
+            if (!isSoundOn) return;
+            const oscillator = audioContext.createOscillator();
+            oscillator.type = 'sine';
+            oscillator.frequency.setValueAtTime(1000, audioContext.currentTime);
+            oscillator.connect(audioContext.destination);
+            oscillator.start();
+            oscillator.stop(audioContext.currentTime + 0.01);
+        };
+
+        const playTickSound = () => {
+            if (!isSoundOn) return;
+            const oscillator = audioContext.createOscillator();
+            oscillator.type = 'sine';
+            oscillator.frequency.setValueAtTime(2000, audioContext.currentTime);
+            oscillator.connect(audioContext.destination);
+            oscillator.start();
+            oscillator.stop(audioContext.currentTime + 0.01);
         };
 
         const playWarningSound = () => {
-            const audio = new Audio('warning_sound.mp3');
-            audio.play();
+            if (!isSoundOn) return;
+            const oscillator = audioContext.createOscillator();
+            oscillator.type = 'square';
+            oscillator.frequency.setValueAtTime(220, audioContext.currentTime);
+            oscillator.connect(audioContext.destination);
+            oscillator.start();
+            oscillator.stop(audioContext.currentTime + 0.5);
+        };
+
+        const toggleSound = () => {
+            isSoundOn = !isSoundOn;
+            soundToggle.innerHTML = isSoundOn ?
+                '<svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>' :
+                '<svg viewBox="0 0 24 24"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>';
         };
 
         numberOfPlayers.addEventListener('change', updateHexLayout);
@@ -608,11 +713,13 @@
         pauseButton.addEventListener('click', togglePause);
         resetButton.addEventListener('click', resetGame);
         backButton.addEventListener('click', goBack);
+        soundToggle.addEventListener('click', toggleSound);
 
         document.querySelectorAll('.player-timer').forEach((timer, index) => {
             timer.addEventListener('click', () => {
-                if (!isGameStarted || (isGameStarted && !isPaused && index !== activePlayerIndex && !players[index].eliminated)) {
+                if (!isGameStarted || (isGameStarted && !isPaused && !players[index].eliminated)) {
                     startTimer(index);
+                    nextPlayer();
                 }
             });
         });
