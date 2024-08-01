@@ -411,12 +411,12 @@
         .clock-face {
             fill: none;
             stroke: white;
-            stroke-width: 0.02em;
+            stroke-width: 0.1em;
         }
 
         .clock-hand {
             stroke: white;
-            stroke-width: 0.02em;
+            stroke-width: 0.1em;
             stroke-linecap: round;
         }
 
@@ -560,6 +560,8 @@
 
         // Function to play a sound file
         function playSound(filename) {
+            if (!isSoundOn) return;
+
             if (!audioContext || audioContext.state === 'suspended') {
                 console.warn('AudioContext is not initialized or is suspended. Sound will not play.');
                 return;
