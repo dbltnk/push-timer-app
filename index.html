@@ -203,6 +203,27 @@
             user-select: none;
         }
 
+        .overlay-text {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            font-size: 1.5em;
+            pointer-events: none;
+            /* Prevent interaction with the overlay */
+            opacity: 1;
+            transition: opacity 0.3s ease;
+            visibility: hidden;
+        }
+
+        .player-timer .overlay-text.hidden {
+            opacity: 0;
+        }
+
         .player-timer .time {
             font-size: 3em;
         }
@@ -424,12 +445,18 @@
         <div id="timerPage">
             <div id="hexLayout">
                 <div class="hexagon"></div>
-                <div id="timer1" class="player-timer"></div>
-                <div id="timer2" class="player-timer"></div>
-                <div id="timer3" class="player-timer"></div>
-                <div id="timer4" class="player-timer"></div>
-                <div id="timer5" class="player-timer"></div>
-                <div id="timer6" class="player-timer"></div>
+                <div id="timer1" class="player-timer"> <span class="overlay-text">TAP TO START</span>
+                </div>
+                <div id="timer2" class="player-timer"> <span class="overlay-text">TAP TO START</span>
+                </div>
+                <div id="timer3" class="player-timer"> <span class="overlay-text">TAP TO START</span>
+                </div>
+                <div id="timer4" class="player-timer"> <span class="overlay-text">TAP TO START</span>
+                </div>
+                <div id="timer5" class="player-timer"> <span class="overlay-text">TAP TO START</span>
+                </div>
+                <div id="timer6" class="player-timer"> <span class="overlay-text">TAP TO START</span>
+                </div>
                 <button id="pauseButton" class="action-button inactive">
                     <svg viewBox="0 0 24 24">
                         <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
@@ -531,6 +558,7 @@
                 timerElement.innerHTML = `
             <div class="time">${formatTime(player.timeLeft)}</div>
             <div class="name">${player.name}</div>
+            <span class="overlay-text">TAP TO START</span>
         `;
                 timerElement.className = `player-timer ${player.color}`;
                 if (index === activePlayerIndex) {
@@ -550,6 +578,7 @@
                 timerElement.style.display = player.active ? 'flex' : 'none';
             });
         };
+
 
         const startGame = () => {
             const count = parseInt(numberOfPlayers.value);
@@ -574,6 +603,20 @@
             setupPage.style.display = 'none';
             timerPage.style.display = 'block';
             hexLayout.className = count === 2 ? 'two-players' : '';
+
+            document.querySelectorAll('.player-timer').forEach((timer, index) => {
+                if (index < count) {
+                    timer.style.display = 'flex';
+                    timer.querySelector('.overlay-text').style.visibility = 'visible';
+                } else {
+                    timer.style.display = 'none';
+                }
+                timer.addEventListener('click', () => {
+                    document.querySelectorAll('.overlay-text').forEach(overlay => {
+                        overlay.classList.remove('hidden');
+                    });
+                });
+            });
         };
 
         const startTimer = (playerIndex) => {
@@ -722,6 +765,11 @@
                     startTimer(index);
                     nextPlayer();
                 }
+
+                // Remove all overlays when one is tapped
+                document.querySelectorAll('.overlay-text').forEach(overlay => {
+                    overlay.classList.add('hidden');
+                });
             });
         });
 
