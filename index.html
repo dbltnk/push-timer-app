@@ -158,8 +158,12 @@
             background-color: rgba(244, 67, 54, 0.2);
         }
 
+        .time-container {
+            display: flex;
+            align-items: center;
+        }
+
         .player-timer .time {
-            font-size: 4em;
             text-align: center;
         }
 
@@ -244,6 +248,7 @@
 
         #pauseButton {
             width: 100%;
+            max-width: 600px;
             margin: 1em 0;
             font-size: 1.5em;
             padding: 15px;
@@ -306,22 +311,22 @@
 
         .player-list[data-players="2"] .player-input input,
         #timerList[data-players="2"] .player-timer .time {
-            font-size: calc(24px + (60 - 24) * ((100vw - 300px) / (1600 - 300)) * 3);
+            font-size: 8em;
         }
 
         .player-list[data-players="3"] .player-input input,
         #timerList[data-players="3"] .player-timer .time {
-            font-size: calc(20px + (50 - 20) * ((100vw - 300px) / (1600 - 300)) * 3);
+            font-size: 7em;
         }
 
         .player-list[data-players="4"] .player-input input,
         #timerList[data-players="4"] .player-timer .time {
-            font-size: calc(18px + (45 - 18) * ((100vw - 300px) / (1600 - 300)) * 3);
+            font-size: 6em;
         }
 
         .player-list[data-players="6"] .player-input input,
         #timerList[data-players="6"] .player-timer .time {
-            font-size: calc(16px + (40 - 16) * ((100vw - 300px) / (1600 - 300)) * 3);
+            font-size: 5em;
         }
 
         .player-list[data-players="2"] .player-input input,
@@ -354,6 +359,40 @@
 
         #timerList[data-players="2"] .player-timer {
             min-height: 240px;
+        }
+
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .clock-icon {
+            width: 5em;
+            height: 5em;
+            margin-right: 1em;
+            transition: transform 0.5s ease;
+        }
+
+        .clock-icon.rotating .clock-hand {
+            animation: rotate 1s linear infinite;
+            transform-origin: center;
+        }
+
+        .clock-face {
+            fill: none;
+            stroke: white;
+            stroke-width: 3;
+        }
+
+        .clock-hand {
+            stroke: white;
+            stroke-width: 3;
+            stroke-linecap: round;
         }
 
         @media (max-width: 600px) {
@@ -531,7 +570,6 @@
             return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
         };
 
-        // Updated updateTimerDisplay function
         const updateTimerDisplay = () => {
             timerList.innerHTML = '';
             timerList.setAttribute('data-players', players.length);
@@ -539,15 +577,22 @@
                 const timerElement = document.createElement('div');
                 timerElement.className = `player-timer ${player.color}`;
                 timerElement.innerHTML = `
-            <div class="time">${formatTime(player.timeLeft)}</div>
-            <div class="name">${player.name}</div>
-        `;
+                    <div class="time-container">
+                        <svg class="clock-icon" viewBox="0 0 100 100">
+                            <circle class="clock-face" cx="50" cy="50" r="45" />
+                            <line class="clock-hand" x1="50" y1="50" x2="50" y2="10" />
+                        </svg>
+                        <div class="time">${formatTime(player.timeLeft)}</div>
+                    </div>
+                    <div class="name">${player.name}</div>
+                `;
                 if (index === activePlayerIndex) {
                     timerElement.classList.add('active');
                     if (isPaused) {
                         timerElement.classList.add('paused');
                     } else {
                         timerElement.classList.remove('paused');
+                        timerElement.querySelector('.clock-icon').classList.add('rotating');
                     }
                 }
                 if (player.timeLeft <= 60 && player.timeLeft > 0) {
@@ -558,7 +603,6 @@
                 }
                 timerList.appendChild(timerElement);
 
-                // Add event listener to each timer element
                 timerElement.addEventListener('click', () => {
                     if (isGameStarted && !isPaused && activePlayerIndex === index) {
                         startTimer(index);
@@ -575,7 +619,6 @@
             });
         };
 
-        // Updated startGame function
         const startGame = () => {
             const count = parseInt(numberOfPlayers.value);
             const colors = playerColors[count];
