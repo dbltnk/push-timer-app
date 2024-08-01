@@ -344,6 +344,18 @@
             font-size: calc(12px + (30 - 12) * ((100vw - 300px) / (1600 - 300)));
         }
 
+        #timerList[data-players="4"] .player-timer {
+            min-height: 120px;
+        }
+
+        #timerList[data-players="3"] .player-timer {
+            min-height: 160px;
+        }
+
+        #timerList[data-players="2"] .player-timer {
+            min-height: 240px;
+        }
+
         @media (max-width: 600px) {
             :root {
                 --base-font-size: 14px;
