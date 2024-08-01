@@ -737,13 +737,14 @@
         };
 
         const playTickSound = () => {
-            if (!isSoundOn) return;
-            const oscillator = audioContext.createOscillator();
-            oscillator.type = 'sine';
-            oscillator.frequency.setValueAtTime(2000, audioContext.currentTime);
-            oscillator.connect(audioContext.destination);
-            oscillator.start();
-            oscillator.stop(audioContext.currentTime + 0.01);
+            // currently disabled
+            // if (!isSoundOn) return;
+            // const oscillator = audioContext.createOscillator();
+            // oscillator.type = 'sine';
+            // oscillator.frequency.setValueAtTime(2000, audioContext.currentTime);
+            // oscillator.connect(audioContext.destination);
+            // oscillator.start();
+            // oscillator.stop(audioContext.currentTime + 0.01);
         };
 
         const playWarningSound = () => {
@@ -772,9 +773,13 @@
 
         document.querySelectorAll('.player-timer').forEach((timer, index) => {
             timer.addEventListener('click', () => {
-                if (activePlayerIndex === -1 || (isGameStarted && !isPaused && activePlayerIndex === index)) {
+                if (isGameStarted && !isPaused && activePlayerIndex === index) {
                     startTimer(index);
                     nextPlayer();
+                }
+                else if (activePlayerIndex === -1) {
+                    startTimer(index);
+                    // not going to the next player since this is the first click
                 }
 
                 // Remove all overlays when one is tapped
