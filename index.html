@@ -274,6 +274,16 @@
             font-size: 1.5em;
             padding: 15px;
             height: 90px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #pauseButton svg {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+            fill: currentColor;
         }
 
         #pauseButton.inactive {
@@ -484,7 +494,12 @@
         <div id="timerPage">
             <h2 id="rickVsRickTimer">Rick vs Rick:</h2>
             <h1 id="multiverseMarbleMadnessTimer">Multiverse Marble Madness</h1>
-            <button id="pauseButton" class="action-button inactive">Pause</button>
+            <button id="pauseButton" class="action-button inactive">
+                <svg viewBox="0 0 24 24">
+                    <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
+                </svg>
+                Pause
+            </button>
             <div id="timerList" class="player-list">
                 <!-- Player timers will be dynamically added here -->
             </div>
@@ -781,16 +796,30 @@
         const updatePauseButton = () => {
             if (!isGameStarted) {
                 pauseButton.className = 'action-button inactive';
-                pauseButton.textContent = 'Pause';
+                pauseButton.innerHTML = `
+                    <svg viewBox="0 0 24 24">
+                        <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+                    </svg>
+                    Pause
+                `;
             } else if (isPaused) {
                 pauseButton.className = 'action-button can-play';
-                pauseButton.textContent = 'Resume';
+                pauseButton.innerHTML = `
+                    <svg viewBox="0 0 24 24">
+                        <path d="M8 5v14l11-7z"/>
+                    </svg>
+                    Resume
+                `;
             } else {
                 pauseButton.className = 'action-button can-pause';
-                pauseButton.textContent = 'Pause';
+                pauseButton.innerHTML = `
+                    <svg viewBox="0 0 24 24">
+                        <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+                    </svg>
+                    Pause
+                `;
             }
         };
-
         const goBack = () => {
             if (confirm('Are you sure you want to go back to the setup page? This will end the current game.')) {
                 clearInterval(gameInterval);
