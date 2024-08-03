@@ -601,7 +601,8 @@
             '327736__distillerystudio__error_03.wav',
             '453391__breviceps__warp-sfx.wav',
             '352804__jofae__timer-click-track.wav',
-            '543966__sweet_niche__trumpet_cry.wav'
+            '543966__sweet_niche__trumpet_cry.wav',
+            '497019__philstrahl__wall-switch.wav'
         ];
 
         function initAudioContext() {
@@ -886,13 +887,14 @@
         };
 
         const playClickSound = () => {
-            if (!isSoundOn || !audioContext) return;
-            const oscillator = audioContext.createOscillator();
-            oscillator.type = 'sine';
-            oscillator.frequency.setValueAtTime(1000, audioContext.currentTime);
-            oscillator.connect(audioContext.destination);
-            oscillator.start();
-            oscillator.stop(audioContext.currentTime + 0.01);
+            playSound('497019__philstrahl__wall-switch.wav');
+            // if (!isSoundOn || !audioContext) return;
+            // const oscillator = audioContext.createOscillator();
+            // oscillator.type = 'sine';
+            // oscillator.frequency.setValueAtTime(1000, audioContext.currentTime);
+            // oscillator.connect(audioContext.destination);
+            // oscillator.start();
+            // oscillator.stop(audioContext.currentTime + 0.01);
         };
 
         const toggleSound = () => {
