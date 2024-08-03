@@ -226,12 +226,12 @@
             0%,
             100% {
                 opacity: 1;
-                box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+                box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
             }
 
             50% {
-                opacity: 0.8;
-                box-shadow: 0 0 30px rgba(255, 255, 255, 0.8);
+                opacity: 0.5;
+                box-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
             }
         }
 
@@ -707,15 +707,15 @@
                 const timerElement = document.createElement('div');
                 timerElement.className = `player-timer ${player.color}`;
                 timerElement.innerHTML = `
-                <div class="time-container">
-                    <svg class="clock-icon" viewBox="0 0 100 100">
-                        <circle class="clock-face" cx="50" cy="50" r="45" />
+            <div class="time-container">
+                <svg class="clock-icon" viewBox="0 0 100 100">
+                    <circle class="clock-face" cx="50" cy="50" r="45" />
                         <line class="clock-hand" x1="50" y1="50" x2="50" y2="10" />
-                    </svg>
-                    <div class="time">${formatTime(player.timeLeft)}</div>
-                </div>
-                <div class="name">${player.name}</div>
-            `;
+                </svg>
+                <div class="time">${formatTime(player.timeLeft)}</div>
+            </div>
+            <div class="name">${player.name}</div>
+        `;
                 if (index === activePlayerIndex) {
                     timerElement.classList.add('active');
                     if (isPaused) {
@@ -738,6 +738,7 @@
                     if (isGameStarted && !isPaused && activePlayerIndex === index) {
                         startTimer(index);
                         nextPlayer();
+                        updateTimerDisplay(); // Update display immediately after switching
                         playClickSound();
                     }
                     else if (activePlayerIndex === -1) {
@@ -790,7 +791,7 @@
             isGameStarted = true;
             isPaused = false;
             updatePauseButton();
-            updateTimerDisplay();
+            updateTimerDisplay(); // Update display immediately
 
             if (gameInterval) clearInterval(gameInterval);
             gameInterval = setInterval(() => {
