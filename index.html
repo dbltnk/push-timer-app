@@ -176,7 +176,6 @@
             box-sizing: border-box;
             border: 3px solid;
             user-select: none;
-            min-height: 80px;
             flex-grow: 1;
             background-color: rgba(255, 255, 255, 0.1);
         }
@@ -290,18 +289,18 @@
         #pauseButton {
             width: 100%;
             max-width: 600px;
-            margin: 1em 0;
-            font-size: 3em;
-            padding: 15px;
-            height: 90px;
+            margin-top: 0.8em;
+            margin-bottom: 0em;
+            font-size: 2em;
+            height: 50px;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
         #pauseButton svg {
-            width: 1em;
-            height: 1em;
+            width: .75em;
+            height: .75em;
             margin-right: 10px;
             fill: currentColor;
         }
@@ -322,8 +321,8 @@
         .bottom-buttons {
             display: flex;
             justify-content: space-between;
-            margin-top: auto;
-            padding: 1em 0;
+            margin-top: -1.5em;
+            padding: 0.5em 0;
             width: 100%;
             max-width: 600px;
         }
@@ -387,7 +386,7 @@
         .player-list[data-players="6"] .player-input input,
         #timerList[data-players="6"] .player-timer .time,
         #timerList[data-players="6"] .player-timer .clock-icon {
-            font-size: 3.5em;
+            font-size: 2.5em;
         }
 
         .player-list[data-players="2"] .player-input input,
@@ -408,6 +407,10 @@
         .player-list[data-players="6"] .player-input input,
         #timerList[data-players="6"] .player-timer .name {
             font-size: calc(12px + (30 - 12) * ((100vw - 300px) / (1600 - 300)));
+        }
+
+        #timerList[data-players="6"] .player-timer {
+            min-height: 75px;
         }
 
         #timerList[data-players="4"] .player-timer {
