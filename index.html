@@ -590,8 +590,17 @@
         let isSoundOn = true;
 
         let audioContext;
+        let audioBuffers = {};
+        let isAudioInitialized = false;
 
-        // Function to initialize audio context
+        const audioFiles = [
+            '573923__ladyimperatrix__female-voice-and-so-it-begins.wav',
+            '327736__distillerystudio__error_03.wav',
+            '453391__breviceps__warp-sfx.wav',
+            '352804__jofae__timer-click-track.wav',
+            '543966__sweet_niche__trumpet_cry.wav'
+        ];
+
         function initAudioContext() {
             if (!audioContext) {
                 audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -599,27 +608,43 @@
             if (audioContext.state === 'suspended') {
                 audioContext.resume();
             }
+            if (!isAudioInitialized) {
+                preloadAllAudio().then(() => {
+                    console.log('All audio preloaded');
+                    isAudioInitialized = true;
+                });
+            }
         }
 
-        // Function to play a sound file
-        function playSound(filename) {
-            if (!isSoundOn) return;
-
-            if (!audioContext || audioContext.state === 'suspended') {
-                console.warn('AudioContext is not initialized or is suspended. Sound will not play.');
-                return;
-            }
-
-            fetch(filename)
+        function preloadAudio(filename) {
+            return fetch(filename)
                 .then(response => response.arrayBuffer())
                 .then(arrayBuffer => audioContext.decodeAudioData(arrayBuffer))
                 .then(audioBuffer => {
-                    const source = audioContext.createBufferSource();
-                    source.buffer = audioBuffer;
-                    source.connect(audioContext.destination);
-                    source.start();
+                    audioBuffers[filename] = audioBuffer;
                 })
-                .catch(error => console.error('Error with playing sound:', error));
+                .catch(error => console.error('Error preloading audio:', error));
+        }
+
+        function preloadAllAudio() {
+            return Promise.all(audioFiles.map(preloadAudio));
+        }
+
+        function playSound(filename) {
+            if (!isSoundOn || !isAudioInitialized) return;
+
+            if (audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
+
+            if (audioBuffers[filename]) {
+                const source = audioContext.createBufferSource();
+                source.buffer = audioBuffers[filename];
+                source.connect(audioContext.destination);
+                source.start();
+            } else {
+                console.warn('Audio not preloaded:', filename);
+            }
         }
 
         const updatePlayerList = () => {
@@ -676,15 +701,15 @@
                 const timerElement = document.createElement('div');
                 timerElement.className = `player-timer ${player.color}`;
                 timerElement.innerHTML = `
-                    <div class="time-container">
-                        <svg class="clock-icon" viewBox="0 0 100 100">
-                            <circle class="clock-face" cx="50" cy="50" r="45" />
-                            <line class="clock-hand" x1="50" y1="50" x2="50" y2="10" />
-                        </svg>
-                        <div class="time">${formatTime(player.timeLeft)}</div>
-                    </div>
-                    <div class="name">${player.name}</div>
-                `;
+                <div class="time-container">
+                    <svg class="clock-icon" viewBox="0 0 100 100">
+                        <circle class="clock-face" cx="50" cy="50" r="45" />
+                        <line class="clock-hand" x1="50" y1="50" x2="50" y2="10" />
+                    </svg>
+                    <div class="time">${formatTime(player.timeLeft)}</div>
+                </div>
+                <div class="name">${player.name}</div>
+            `;
                 if (index === activePlayerIndex) {
                     timerElement.classList.add('active');
                     if (isPaused) {
@@ -825,29 +850,30 @@
             if (!isGameStarted) {
                 pauseButton.className = 'action-button inactive';
                 pauseButton.innerHTML = `
-                    <svg viewBox="0 0 24 24">
-                        <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
-                    </svg>
-                    Pause
-                `;
+                <svg viewBox="0 0 24 24">
+                    <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+                </svg>
+                Pause
+            `;
             } else if (isPaused) {
                 pauseButton.className = 'action-button can-play';
                 pauseButton.innerHTML = `
-                    <svg viewBox="0 0 24 24">
-                        <path d="M8 5v14l11-7z"/>
-                    </svg>
-                    Resume
-                `;
+                <svg viewBox="0 0 24 24">
+                    <path d="M8 5v14l11-7z"/>
+                </svg>
+                Resume
+            `;
             } else {
                 pauseButton.className = 'action-button can-pause';
                 pauseButton.innerHTML = `
-                    <svg viewBox="0 0 24 24">
-                        <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
-                    </svg>
-                    Pause
-                `;
+                <svg viewBox="0 0 24 24">
+                    <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+                </svg>
+                Pause
+            `;
             }
         };
+
         const goBack = () => {
             if (confirm('Are you sure you want to go back to the setup page? This will end the current game.')) {
                 clearInterval(gameInterval);
@@ -885,6 +911,60 @@
 
         updatePlayerList();
         updateMultiverseMarbleMadnessColors();
+
+        // Add touch event listeners for mobile devices
+        document.addEventListener('touchstart', initAudioContext, { once: true });
+
+        // Preload audio files when the page loads
+        window.addEventListener('load', () => {
+            if ('AudioContext' in window || 'webkitAudioContext' in window) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                preloadAllAudio().then(() => {
+                    console.log('All audio preloaded');
+                    isAudioInitialized = true;
+                });
+            }
+        });
+
+        // Ensure audio plays on iOS devices
+        window.addEventListener('touchend', () => {
+            if (audioContext && audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
+        });
+
+        // Function to handle visibility change
+        function handleVisibilityChange() {
+            if (document.hidden && !isPaused && isGameStarted) {
+                togglePause();
+            }
+        }
+
+        // Add event listener for visibility change
+        document.addEventListener("visibilitychange", handleVisibilityChange);
+
+        // Add swipe detection for mobile devices
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        function checkDirection() {
+            if (touchEndX < touchStartX) nextPlayer();
+        }
+
+        document.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        document.addEventListener('touchend', e => {
+            touchEndX = e.changedTouches[0].screenX;
+            checkDirection();
+        });
+
+        // Prevent default touch behavior to avoid scrolling issues
+        document.addEventListener('touchmove', function (e) {
+            e.preventDefault();
+        }, { passive: false });
+    </script>
     </script>
 </body>
 
