@@ -85,6 +85,24 @@
             letter-spacing: 1.5px;
         }
 
+        #rickVsRickTimer {
+            font-size: 1.2em;
+            display: inline-block;
+        }
+
+        #multiverseMarbleMadnessTimer {
+            font-size: 1.2em;
+            display: inline-block;
+        }
+
+        #timerHeaderContainer {
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            margin-top: 10px;
+            margin-bottom: -30px;
+        }
+
         .input-group {
             display: flex;
             justify-content: space-between;
@@ -500,8 +518,10 @@
         </div>
 
         <div id="timerPage">
-            <h2 id="rickVsRickTimer">Rick vs Rick:</h2>
-            <h1 id="multiverseMarbleMadnessTimer">Multiverse Marble Madness</h1>
+            <div id="timerHeaderContainer">
+                <h2 id="rickVsRickTimer">Rick vs Rick:</h2>
+                <h1 id="multiverseMarbleMadnessTimer">Multiverse Marble Madness</h1>
+            </div>
             <button id="pauseButton" class="action-button inactive">
                 <svg viewBox="0 0 24 24">
                     <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
