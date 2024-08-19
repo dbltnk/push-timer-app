@@ -700,6 +700,16 @@
             return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
         };
 
+        const debounce = (func, delay) => {
+            let debounceTimer;
+            return function () {
+                const context = this;
+                const args = arguments;
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(() => func.apply(context, args), delay);
+            }
+        };
+
         const updateTimerDisplay = () => {
             timerList.innerHTML = '';
             timerList.setAttribute('data-players', players.length);
@@ -710,7 +720,7 @@
             <div class="time-container">
                 <svg class="clock-icon" viewBox="0 0 100 100">
                     <circle class="clock-face" cx="50" cy="50" r="45" />
-                        <line class="clock-hand" x1="50" y1="50" x2="50" y2="10" />
+                    <line class="clock-hand" x1="50" y1="50" x2="50" y2="10" />
                 </svg>
                 <div class="time">${formatTime(player.timeLeft)}</div>
             </div>
@@ -733,7 +743,7 @@
                 }
                 timerList.appendChild(timerElement);
 
-                timerElement.addEventListener('click', () => {
+                const debouncedClick = debounce(() => {
                     initAudioContext(); // Ensure audio context is initialized
                     if (isGameStarted && !isPaused && activePlayerIndex === index) {
                         startTimer(index);
@@ -749,7 +759,9 @@
                     else {
                         playSound('327736__distillerystudio__error_03.wav');
                     }
-                });
+                }, 300)
+
+                timerElement.addEventListener('click', debouncedClick);
             });
         };
 
